@@ -6,7 +6,7 @@ const persistentAudioPlayer = {
     updateButtonUI() {
         const musicBtn = document.getElementById('music-toggle-btn');
         if (!musicBtn || !this.audio) return;
-        musicBtn.textContent = this.audio.paused ? '🔇' : '🎵';
+        musicBtn.textContent = this.audio.paused ? '🔇' : '🔊';
     },
 
     initializeOnLoad() {
