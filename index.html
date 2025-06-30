@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XTempest</title>
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="intro-page">
+    <video autoplay muted loop id="intro-video-bg">
+        <source src="assets/images/intro.mp4" type="video/mp4">
+        Browser Anda tidak mendukung tag video.
+    </video>
+
+    <div id="start-screen" class="start-screen">
+        <div class="start-content">
+            <button id="start-button" class="nes-btn is-primary">Start</button>
+        </div>
+    </div>
+
+    <div id="loadingScreen" class="loading-screen" style="display: none;">
+        <div class="loading-content">
+            <img src="assets/images/loading.gif" alt="Pixel art stasiun kereta Jepang" class="loading-image">
+            <div class="loading-bar-container">
+                <div id="loadingBarFill" class="loading-bar-fill"></div>
+            </div>
+            <p class="loading-text">Loading...</p>
+        </div>
+    </div>
+
+    <div class="bg-container">
+        <div class="city-bg"></div>
+        <div class="clouds"></div>
+        <div class="clouds" style="top: 20%; animation-delay: -10s; animation-duration: 25s;"></div>
+        <div class="clouds" style="top: 5%; animation-delay: -5s; animation-duration: 30s;"></div>
+        <div class="pixel-art-elements">
+            <img src="assets/images/1.gif" alt="Pixel art animation 1" class="bg-pixel-gif" id="pixel-gif-1">
+            <img src="assets/images/2.gif" alt="Pixel art animation 2" class="bg-pixel-gif" id="pixel-gif-2">
+            <img src="assets/images/4.gif" alt="Pixel art animation 3" class="bg-pixel-gif" id="pixel-gif-3">
+            <img src="assets/images/5.gif" alt="Pixel art animation 4" class="bg-pixel-gif" id="pixel-gif-4">
+        </div>
+    </div>
+
+    <div id="introContainer" class="intro-container" style="display: none;">
+        <div class="character">
+            <div class="eyes-container">
+                <div class="eye"></div>
+                <div class="eye"></div>
+            </div>
+            <div class="mouth"></div>
+        </div>
+        <div class="nes-dialog is-rounded" id="dialogBox">
+            <p id="dialogText" class="dialog-text"></p>
+            <menu class="dialog-menu">
+                <button id="skipBtn" class="nes-btn">Skip</button>
+                <button id="continueBtn" class="nes-btn is-primary">Continue</button>
+            </menu>
+        </div>
+    </div>
+
+    <div id="portal-transition" class="portal-transition">
+        <div class="portal-vortex"></div>
+        <canvas id="portal-particles" class="portal-particles"></canvas>
+    </div>
+
+    <main id="main-app" style="display: none;">
+        <div class="top-right-controls">
+            <button id="music-toggle-btn" class="nes-btn is-warning">🎵</button>
+        </div>
+
+        <button id="main-back-btn" class="back-btn" onclick="showMainMenu()">← Back</button>
+
+        <div id="mainNav" class="main-nav">
+            <button class="nav-btn" onclick="showPage('blog')">📚 Blog</button>
+            <button class="nav-btn" onclick="showPage('music')">🎵 Music</button>
+            <button class="nav-btn" onclick="showPage('art')">🖼️ Art</button>
+            <button class="nav-btn" onclick="showPage('about')">🧩 About Me</button>
+        </div>
+
+        <div id="blogPage" class="page-content">
+            <h1 class="page-header">📚 My Blog</h1>
+            <div id="blogPosts" class="blog-posts"></div>
+        </div>
+
+        <div id="musicPage" class="page-content">
+            <h1 class="page-header">🎵 Music</h1>
+            <div id="musicList" class="music-list"></div>
+        </div>
+
+        <div id="artPage" class="page-content">
+            <h1 class="page-header">🖼️ Art</h1>
+            <div id="galleryGrid" class="gallery-grid"></div>
+        </div>
+
+        <div id="aboutPage" class="page-content">
+            <h1 class="page-header">🧩 Me</h1>
+            <div id="aboutContent" class="about-content"></div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
