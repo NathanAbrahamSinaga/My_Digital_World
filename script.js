@@ -359,7 +359,9 @@ function loadPageContent(pageName) {
         case 'blog':
             fetchAndRender(`${pathPrefix}blog.json`, document.getElementById('blogPosts'), (post, index) => `
                 <div class="blog-post" style="animation-delay: ${(index * 0.2)}s">
-                    <h3>${post.judul}</h3><p>${post.isi}</p><div class="blog-date">${post.tanggal}</div>
+                    <h3>${post.judul}</h3>
+                    <div class="blog-post-content">${post.isi}</div>
+                    <div class="blog-date">${post.tanggal}</div>
                 </div>`);
             break;
         case 'music':

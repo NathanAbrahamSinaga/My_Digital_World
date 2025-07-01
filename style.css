@@ -486,10 +486,30 @@ body {
     font-size: 14px;
 }
 
-.blog-post p {
+.blog-post-content {
     line-height: 1.6;
     color: #555;
     font-size: 11px;
+}
+
+.blog-post-content p {
+    margin-bottom: 1em;
+}
+
+.blog-post-content p:last-of-type {
+    margin-bottom: 0;
+}
+
+.blog-post-content b, 
+.blog-post-content strong {
+    color: #212529;
+    font-weight: bold;
+}
+
+.blog-post-content i, 
+.blog-post-content em {
+    color: #4A90E2;
+    font-style: italic;
 }
 
 .blog-date {
