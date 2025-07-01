@@ -299,63 +299,45 @@ body {
     min-height: 60px;
 }
 
-.portal-transition {
+/* START: CSS untuk Pixel Transition (Pengganti Portal) */
+.pixel-transition {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
+    width: 100vw;
+    height: 100vh;
     z-index: 1500;
-    background: rgba(0, 0, 0, 0.8);
-    opacity: 1;
-}
-
-.portal-transition.fade-out {
-    animation: fade-out-bg 1s ease-in forwards;
-}
-
-@keyframes fade-out-bg {
-    from { opacity: 1; }
-    to   { opacity: 0; }
-}
-
-.portal-vortex {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100px;
-    height: 100px;
-    background: conic-gradient(from 90deg at 50% 50%, #4A90E2, #87CEEB, #90EE90, #32CD32, #FFB6C1, #4A90E2);
-    border-radius: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    animation: portal-open 2s ease-in-out forwards;
-    box-shadow: 0 0 50px rgba(74, 144, 226, 0.8), 0 0 100px rgba(144, 238, 144, 0.6);
-}
-
-@keyframes portal-open {
-    0% {
-        transform: translate(-50%, -50%) scale(0) rotate(0deg);
-        opacity: 0;
-    }
-    50% {
-        transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
-        opacity: 1;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(10) rotate(360deg);
-        opacity: 0.5;
-    }
-}
-
-.portal-particles {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    display: flex;
     pointer-events: none;
+    overflow: hidden;
 }
+
+.pixel-bar {
+    flex-grow: 1;
+    background-color: rgb(40, 43, 53); /* Warna sama dengan loading screen */
+    transform-origin: bottom;
+    transform: scaleY(0);
+}
+
+.pixel-transition.animate-in .pixel-bar {
+    animation: pixel-grow 0.4s ease-in-out forwards;
+}
+
+.pixel-transition.animate-out .pixel-bar {
+    transform-origin: top; 
+    animation: pixel-shrink 0.4s ease-in-out forwards;
+}
+
+@keyframes pixel-grow {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+}
+
+@keyframes pixel-shrink {
+    from { transform: scaleY(1); }
+    to { transform: scaleY(0); }
+}
+/* END: CSS untuk Pixel Transition */
 
 .main-nav {
     position: fixed;
@@ -724,7 +706,6 @@ body {
     100% { transform: scale(1); opacity: 0.8; }
 }
 
-/* --- [START] PERBAIKAN TOTAL UNTUK TAMPILAN MOBILE --- */
 @media (max-width: 768px) {
     #dialogBox {
         width: 95%;
@@ -743,53 +724,44 @@ body {
         grid-template-columns: 1fr;
     }
 
-    /* Strategi baru: Tarik semua gambar ke dalam layar, beri jarak dari tepi. */
-    /* Hapus semua posisi negatif untuk menghindari gambar terpotong. */
-
-    /* GIF #3 (Jalanan malam) -> Pojok kiri atas */
     #pixel-gif-3 {
         top: 10%;
-        left: 2%; /* Jarak dari tepi kiri */
+        left: 2%;
         right: auto;
         width: 40vw;
-        max-width: 120px; /* Batasi ukuran maksimum */
+        max-width: 120px;
     }
 
-    /* GIF #4 (Gedung pink) -> Pojok kanan atas */
     #pixel-gif-4 {
         top: 8%;
-        right: 2%; /* Jarak dari tepi kanan */
+        right: 2%;
         left: auto;
         width: 35vw;
-        max-width: 130px; /* Batasi ukuran maksimum */
+        max-width: 130px; 
     }
 
-    /* GIF #1 (Kereta) -> Pojok kiri bawah */
     #pixel-gif-1 {
         top: auto;
         bottom: 5%;
-        left: 2%; /* Jarak dari tepi kiri */
+        left: 2%;
         width: 45vw;
-        max-width: 140px; /* Batasi ukuran maksimum */
+        max-width: 140px;
     }
     
-    /* GIF #2 (Gerbang Torii) -> Pojok kanan bawah */
     #pixel-gif-2 {
        display: block; 
        top: auto;
        bottom: 5%;
-       right: 2%; /* Jarak dari tepi kanan */
+       right: 2%;
        left: auto;
        width: 40vw;
-       max-width: 120px; /* Batasi ukuran maksimum */
+       max-width: 120px;
     }
     
-    /* Sembunyikan GIF yang tidak digunakan */
     #pixel-gif-5, #pixel-gif-6 {
         display: none;
     }
 }
-/* --- [END] PERBAIKAN TOTAL UNTUK TAMPILAN MOBILE --- */
 
 
 #intro-video-bg {

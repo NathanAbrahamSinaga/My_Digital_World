@@ -6,7 +6,7 @@ const persistentAudioPlayer = {
     updateButtonUI() {
         const musicBtn = document.getElementById('music-toggle-btn');
         if (!musicBtn || !this.audio) return;
-        musicBtn.textContent = this.audio.paused ? '🔇' : '🔊';
+        musicBtn.textContent = this.audio.paused ? '🔇' : '🎵';
     },
 
     initializeOnLoad() {
@@ -77,7 +77,7 @@ let isTyping = false;
 let typingTimeout = null; 
 
 const audioSystem = {
-    clickSound: null, portalSound: null, loadingMusic: null, introMusic: null,
+    clickSound: null, pixelWipeSound: null, loadingMusic: null, introMusic: null,
     init() {
         const basePath = '';
         this.loadingMusic = new Audio(`${basePath}assets/music/train.wav`);
@@ -85,13 +85,13 @@ const audioSystem = {
         this.introMusic = new Audio(`${basePath}assets/music/tokyo.mp3`);
         this.introMusic.loop = true;
         this.clickSound = { play() { const ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); const o = ctx.createOscillator(), g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.setValueAtTime(800, ctx.currentTime); g.gain.setValueAtTime(0.1, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.1); } };
-        this.portalSound = { play() { const ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine'; o.connect(g); g.connect(ctx.destination); o.frequency.setValueAtTime(200, ctx.currentTime); o.frequency.exponentialRampToValueAtTime(1000, ctx.currentTime + 1.5); g.gain.setValueAtTime(0.2, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5); o.start(ctx.currentTime); o.stop(ctx.currentTime + 1.5); } };
+        this.pixelWipeSound = { play() { const ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); const gain = ctx.createGain(); gain.connect(ctx.destination); gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6); const noise = ctx.createBufferSource(); const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.6, ctx.sampleRate); const data = buffer.getChannelData(0); for (let i = 0; i < data.length; i++) { data[i] = Math.random() * 2 - 1; } noise.buffer = buffer; const bandpass = ctx.createBiquadFilter(); bandpass.type = "bandpass"; bandpass.frequency.setValueAtTime(200, ctx.currentTime); bandpass.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.4); bandpass.Q.value = 10; noise.connect(bandpass); bandpass.connect(gain); noise.start(ctx.currentTime); noise.stop(ctx.currentTime + 0.6); } };
     },
     playLoadingMusic() { if (this.loadingMusic) this.loadingMusic.play().catch(e => console.error("Gagal memutar audio loading:", e)); },
     playIntroMusic() { if (this.introMusic) this.introMusic.play().catch(e => console.error("Gagal memutar audio intro:", e)); },
     stopIntroMusic() { if (this.introMusic) { this.introMusic.pause(); this.introMusic.currentTime = 0; } },
     playClick() { if (this.clickSound) this.clickSound.play(); },
-    playPortal() { if (this.portalSound) this.portalSound.play(); }
+    playPixelWipe() { if (this.pixelWipeSound) this.pixelWipeSound.play(); }
 };
 audioSystem.init();
 
@@ -173,81 +173,78 @@ function createLeaves() {
     }, 2000);
 }
 
-function createPortalParticles() {
-    const canvas = document.getElementById('portal-particles');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const particles = [];
-    for (let i = 0; i < 50; i++) {
-        particles.push({ x: canvas.width / 2, y: canvas.height / 2, angle: Math.random() * Math.PI * 2, speed: Math.random() * 5 + 2, radius: Math.random() * 3 + 1, life: 100, maxLife: 100 });
+function triggerPixelTransition(callback) {
+    const transitionContainer = document.getElementById('pixel-transition');
+    if (!transitionContainer) {
+        if (callback) callback();
+        return;
     }
-    let animationFrameId;
-    function updateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach((p, i) => {
-            p.x += Math.cos(p.angle) * p.speed;
-            p.y += Math.sin(p.angle) * p.speed;
-            p.angle += 0.1;
-            p.life--;
-            if (p.life <= 0) particles.splice(i, 1);
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(144, 238, 144, ${p.life / p.maxLife})`;
-            ctx.fill();
+
+    const barCount = 20;
+    const animDuration = 400;
+    const staggerDelay = 25;
+
+    transitionContainer.innerHTML = '';
+    for (let i = 0; i < barCount; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'pixel-bar';
+        bar.style.animationDelay = `${i * staggerDelay}ms`;
+        transitionContainer.appendChild(bar);
+    }
+
+    transitionContainer.style.display = 'flex';
+    transitionContainer.classList.add('animate-in');
+    audioSystem.playPixelWipe();
+
+    const totalInDuration = animDuration + (barCount * staggerDelay);
+
+    setTimeout(() => {
+        if (callback) callback();
+
+        transitionContainer.classList.remove('animate-in');
+        transitionContainer.classList.add('animate-out');
+        
+        const bars = transitionContainer.querySelectorAll('.pixel-bar');
+        bars.forEach((bar, i) => {
+            bar.style.animationDelay = `${i * staggerDelay}ms`;
         });
-        if (particles.length > 0) animationFrameId = requestAnimationFrame(updateParticles);
-        else cancelAnimationFrame(animationFrameId);
-    }
-    updateParticles();
-    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+        const totalOutDuration = animDuration + (barCount * staggerDelay);
+        setTimeout(() => {
+            transitionContainer.style.display = 'none';
+            transitionContainer.classList.remove('animate-out');
+            transitionContainer.innerHTML = '';
+        }, totalOutDuration);
+
+    }, totalInDuration);
 }
 
 function skipIntro() {
     const introContainer = document.getElementById('introContainer');
     if (!introContainer || introContainer.style.opacity === '0') return;
-    
-    audioSystem.stopIntroMusic();
 
+    audioSystem.stopIntroMusic();
     if (isTyping && typingTimeout) { clearTimeout(typingTimeout); isTyping = false; }
 
-    const portal = document.getElementById('portal-transition');
     introContainer.style.opacity = '0';
 
     setTimeout(() => {
         introContainer.style.display = 'none';
-        
-        if (portal) {
-            portal.style.display = 'block';
-            audioSystem.playPortal();
-            createPortalParticles();
-        }
 
-        setTimeout(() => {
+        triggerPixelTransition(() => {
             const mainApp = document.getElementById('main-app');
             const introVideo = document.getElementById('intro-video-bg');
             const pixelArt = document.querySelector('.pixel-art-elements');
 
-            if (portal) portal.classList.add('fade-out');
+            if (introVideo) introVideo.style.display = 'none';
+            document.body.classList.remove('intro-page');
+            if (pixelArt) pixelArt.style.display = 'block';
+            if (mainApp) mainApp.style.display = 'block';
 
-            setTimeout(() => {
-                if (portal) portal.style.display = 'none';
-                if (introVideo) introVideo.style.display = 'none';
-
-                document.body.classList.remove('intro-page');
-                if (pixelArt) pixelArt.style.display = 'block';
-
-                if (mainApp) mainApp.style.display = 'block';
-
-                initializeAmbientEffects();
-                showMainMenu();
-                
-                persistentAudioPlayer.initializeOnLoad();
-
-            }, 1000);
-        }, 2000);
-
+            initializeAmbientEffects();
+            showMainMenu();
+            persistentAudioPlayer.initializeOnLoad();
+        });
     }, 500);
 }
 
