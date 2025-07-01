@@ -114,20 +114,22 @@ body {
     }
 }
 
-#pixel-gif-1 {
-    top: 60%;
+/* Posisi Desktop (Layar Lebar) */
+#pixel-gif-1 { /* Kereta di bawah */
+    top: auto;
+    bottom: 8%;
     left: 5%;
     animation-delay: -3s;
 }
 
-#pixel-gif-2 {
+#pixel-gif-2 { /* Gerbang Torii */
     bottom: 8%;
     right: 7%;
     animation-delay: -5s; 
     animation-duration: 9s;
 }
 
-#pixel-gif-3 {
+#pixel-gif-3 { /* Jalanan malam */
     top: 10%;
     left: 8%;
     width: 20vw;
@@ -135,7 +137,7 @@ body {
     animation-delay: -1s;
 }
 
-#pixel-gif-4 {
+#pixel-gif-4 { /* Gedung pink */
     top: 12%;
     right: 5%;
     animation-delay: -7s;
@@ -143,16 +145,13 @@ body {
 }
 
 #pixel-gif-5 {
-    bottom: 5%;
-    left: 20%;
-    width: 15vw;
-    max-width: 220px;
-    animation-delay: 0s;
+    display: none; /* Disembunyikan karena terlalu ramai dengan gif-1 */
 }
 
 #pixel-gif-6 {
     display: none;
 }
+
 
 .leaf {
     position: absolute;
@@ -725,6 +724,7 @@ body {
     100% { transform: scale(1); opacity: 0.8; }
 }
 
+/* --- [START] PERBAIKAN TOTAL UNTUK TAMPILAN MOBILE --- */
 @media (max-width: 768px) {
     #dialogBox {
         width: 95%;
@@ -743,31 +743,54 @@ body {
         grid-template-columns: 1fr;
     }
 
-    #pixel-gif-1, #pixel-gif-5, #pixel-gif-6 {
+    /* Strategi baru: Tarik semua gambar ke dalam layar, beri jarak dari tepi. */
+    /* Hapus semua posisi negatif untuk menghindari gambar terpotong. */
+
+    /* GIF #3 (Jalanan malam) -> Pojok kiri atas */
+    #pixel-gif-3 {
+        top: 10%;
+        left: 2%; /* Jarak dari tepi kiri */
+        right: auto;
+        width: 40vw;
+        max-width: 120px; /* Batasi ukuran maksimum */
+    }
+
+    /* GIF #4 (Gedung pink) -> Pojok kanan atas */
+    #pixel-gif-4 {
+        top: 8%;
+        right: 2%; /* Jarak dari tepi kanan */
+        left: auto;
+        width: 35vw;
+        max-width: 130px; /* Batasi ukuran maksimum */
+    }
+
+    /* GIF #1 (Kereta) -> Pojok kiri bawah */
+    #pixel-gif-1 {
+        top: auto;
+        bottom: 5%;
+        left: 2%; /* Jarak dari tepi kiri */
+        width: 45vw;
+        max-width: 140px; /* Batasi ukuran maksimum */
+    }
+    
+    /* GIF #2 (Gerbang Torii) -> Pojok kanan bawah */
+    #pixel-gif-2 {
+       display: block; 
+       top: auto;
+       bottom: 5%;
+       right: 2%; /* Jarak dari tepi kanan */
+       left: auto;
+       width: 40vw;
+       max-width: 120px; /* Batasi ukuran maksimum */
+    }
+    
+    /* Sembunyikan GIF yang tidak digunakan */
+    #pixel-gif-5, #pixel-gif-6 {
         display: none;
     }
-
-    #pixel-gif-3 {
-        top: 8%;
-        left: 3%;
-        width: 30vw;
-    }
-
-    #pixel-gif-4 {
-        top: 10%;
-        right: 3%;
-        width: 25vw;
-    }
-
-    #pixel-gif-2 {
-       display: block;
-       bottom: 5%;
-       left: 5%;
-       top: auto;
-       right: auto;
-       width: 28vw;
-    }
 }
+/* --- [END] PERBAIKAN TOTAL UNTUK TAMPILAN MOBILE --- */
+
 
 #intro-video-bg {
     position: fixed;
