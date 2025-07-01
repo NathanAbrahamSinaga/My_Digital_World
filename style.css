@@ -12,7 +12,6 @@ body {
     cursor: var(--nes-cursor-default), auto;
 }
 
-/* Background animations */
 .bg-container {
     position: fixed;
     top: 0;
@@ -114,22 +113,21 @@ body {
     }
 }
 
-/* Posisi Desktop (Layar Lebar) */
-#pixel-gif-1 { /* Kereta di bawah */
+#pixel-gif-1 {
     top: auto;
     bottom: 8%;
     left: 5%;
     animation-delay: -3s;
 }
 
-#pixel-gif-2 { /* Gerbang Torii */
+#pixel-gif-2 {
     bottom: 8%;
     right: 7%;
     animation-delay: -5s; 
     animation-duration: 9s;
 }
 
-#pixel-gif-3 { /* Jalanan malam */
+#pixel-gif-3 {
     top: 10%;
     left: 8%;
     width: 20vw;
@@ -137,7 +135,7 @@ body {
     animation-delay: -1s;
 }
 
-#pixel-gif-4 { /* Gedung pink */
+#pixel-gif-4 {
     top: 12%;
     right: 5%;
     animation-delay: -7s;
@@ -145,13 +143,12 @@ body {
 }
 
 #pixel-gif-5 {
-    display: none; /* Disembunyikan karena terlalu ramai dengan gif-1 */
+    display: none;
 }
 
 #pixel-gif-6 {
     display: none;
 }
-
 
 .leaf {
     position: absolute;
@@ -299,7 +296,6 @@ body {
     min-height: 60px;
 }
 
-/* START: CSS untuk Pixel Transition (Pengganti Portal) */
 .pixel-transition {
     position: fixed;
     top: 0;
@@ -313,8 +309,9 @@ body {
 }
 
 .pixel-bar {
-    flex-grow: 1;
-    background-color: rgb(40, 43, 53); /* Warna sama dengan loading screen */
+    width: 5%;
+    height: 100%;
+    background-color: rgb(40, 43, 53);
     transform-origin: bottom;
     transform: scaleY(0);
 }
@@ -337,7 +334,12 @@ body {
     from { transform: scaleY(1); }
     to { transform: scaleY(0); }
 }
-/* END: CSS untuk Pixel Transition */
+
+#main-app {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
 
 .main-nav {
     position: fixed;
@@ -737,7 +739,7 @@ body {
         right: 2%;
         left: auto;
         width: 35vw;
-        max-width: 130px; 
+        max-width: 130px;
     }
 
     #pixel-gif-1 {
@@ -762,7 +764,6 @@ body {
         display: none;
     }
 }
-
 
 #intro-video-bg {
     position: fixed;

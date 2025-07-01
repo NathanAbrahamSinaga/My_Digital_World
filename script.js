@@ -85,7 +85,7 @@ const audioSystem = {
         this.introMusic = new Audio(`${basePath}assets/music/tokyo.mp3`);
         this.introMusic.loop = true;
         this.clickSound = { play() { const ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); const o = ctx.createOscillator(), g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.setValueAtTime(800, ctx.currentTime); g.gain.setValueAtTime(0.1, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.1); } };
-        this.pixelWipeSound = { play() { const ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); const gain = ctx.createGain(); gain.connect(ctx.destination); gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6); const noise = ctx.createBufferSource(); const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.6, ctx.sampleRate); const data = buffer.getChannelData(0); for (let i = 0; i < data.length; i++) { data[i] = Math.random() * 2 - 1; } noise.buffer = buffer; const bandpass = ctx.createBiquadFilter(); bandpass.type = "bandpass"; bandpass.frequency.setValueAtTime(200, ctx.currentTime); bandpass.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.4); bandpass.Q.value = 10; noise.connect(bandpass); bandpass.connect(gain); noise.start(ctx.currentTime); noise.stop(ctx.currentTime + 0.6); } };
+        this.pixelWipeSound = { play() { const ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); const gain = ctx.createGain(); gain.connect(ctx.destination); gain.gain.setValueAtTime(0.4, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6); const noise = ctx.createBufferSource(); const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.6, ctx.sampleRate); const data = buffer.getChannelData(0); for (let i = 0; i < data.length; i++) { data[i] = Math.random() * 2 - 1; } noise.buffer = buffer; const bandpass = ctx.createBiquadFilter(); bandpass.type = "bandpass"; bandpass.frequency.setValueAtTime(200, ctx.currentTime); bandpass.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.4); bandpass.Q.value = 10; noise.connect(bandpass); bandpass.connect(gain); noise.start(ctx.currentTime); noise.stop(ctx.currentTime + 0.6); } };
     },
     playLoadingMusic() { if (this.loadingMusic) this.loadingMusic.play().catch(e => console.error("Gagal memutar audio loading:", e)); },
     playIntroMusic() { if (this.introMusic) this.introMusic.play().catch(e => console.error("Gagal memutar audio intro:", e)); },
@@ -173,55 +173,59 @@ function createLeaves() {
     }, 2000);
 }
 
-function triggerPixelTransition(callback) {
-    const transitionContainer = document.getElementById('pixel-transition');
-    if (!transitionContainer) {
-        if (callback) callback();
+function triggerPixelTransition(onCovered, onComplete) {
+    const transitionEl = document.getElementById('pixel-transition');
+    if (!transitionEl) {
+        if (onCovered) onCovered();
+        if (onComplete) onComplete();
         return;
     }
 
     const barCount = 20;
     const animDuration = 400;
     const staggerDelay = 25;
+    const totalDuration = animDuration + (barCount * staggerDelay);
 
-    transitionContainer.innerHTML = '';
+    transitionEl.innerHTML = '';
     for (let i = 0; i < barCount; i++) {
         const bar = document.createElement('div');
         bar.className = 'pixel-bar';
         bar.style.animationDelay = `${i * staggerDelay}ms`;
-        transitionContainer.appendChild(bar);
+        transitionEl.appendChild(bar);
     }
 
-    transitionContainer.style.display = 'flex';
-    transitionContainer.classList.add('animate-in');
+    transitionEl.style.display = 'flex';
+    transitionEl.classList.add('animate-in');
     audioSystem.playPixelWipe();
 
-    const totalInDuration = animDuration + (barCount * staggerDelay);
-
     setTimeout(() => {
-        if (callback) callback();
+        if (onCovered) {
+            onCovered();
+        }
 
-        transitionContainer.classList.remove('animate-in');
-        transitionContainer.classList.add('animate-out');
+        transitionEl.classList.remove('animate-in');
+        transitionEl.classList.add('animate-out');
         
-        const bars = transitionContainer.querySelectorAll('.pixel-bar');
+        const bars = transitionEl.querySelectorAll('.pixel-bar');
         bars.forEach((bar, i) => {
             bar.style.animationDelay = `${i * staggerDelay}ms`;
         });
 
-        const totalOutDuration = animDuration + (barCount * staggerDelay);
         setTimeout(() => {
-            transitionContainer.style.display = 'none';
-            transitionContainer.classList.remove('animate-out');
-            transitionContainer.innerHTML = '';
-        }, totalOutDuration);
+            transitionEl.style.display = 'none';
+            transitionEl.classList.remove('animate-out');
+            if (onComplete) {
+                onComplete();
+            }
+        }, totalDuration);
 
-    }, totalInDuration);
+    }, totalDuration);
 }
 
 function skipIntro() {
     const introContainer = document.getElementById('introContainer');
-    if (!introContainer || introContainer.style.opacity === '0') return;
+    const mainApp = document.getElementById('main-app');
+    if (!introContainer || !mainApp || introContainer.style.opacity === '0') return;
 
     audioSystem.stopIntroMusic();
     if (isTyping && typingTimeout) { clearTimeout(typingTimeout); isTyping = false; }
@@ -231,20 +235,25 @@ function skipIntro() {
     setTimeout(() => {
         introContainer.style.display = 'none';
 
-        triggerPixelTransition(() => {
-            const mainApp = document.getElementById('main-app');
-            const introVideo = document.getElementById('intro-video-bg');
-            const pixelArt = document.querySelector('.pixel-art-elements');
+        triggerPixelTransition(
+            () => {
+                const introVideo = document.getElementById('intro-video-bg');
+                const pixelArt = document.querySelector('.pixel-art-elements');
 
-            if (introVideo) introVideo.style.display = 'none';
-            document.body.classList.remove('intro-page');
-            if (pixelArt) pixelArt.style.display = 'block';
-            if (mainApp) mainApp.style.display = 'block';
+                if (introVideo) introVideo.style.display = 'none';
+                document.body.classList.remove('intro-page');
+                if (pixelArt) pixelArt.style.display = 'block';
+                
+                mainApp.style.display = 'block';
 
-            initializeAmbientEffects();
-            showMainMenu();
-            persistentAudioPlayer.initializeOnLoad();
-        });
+                initializeAmbientEffects();
+                showMainMenu();
+                persistentAudioPlayer.initializeOnLoad();
+            },
+            () => {
+                mainApp.style.opacity = '1';
+            }
+        );
     }, 500);
 }
 
