@@ -370,13 +370,22 @@ function loadPageContent(pageName) {
                 </div>`);
             break;
         case 'art':
-            fetchAndRender(`${pathPrefix}art.json`, document.getElementById('galleryGrid'), (art, index) => `
-                <div class="gallery-item" style="animation-delay: ${(index * 0.15)}s">
-                    <div class="gallery-img" style="background-image: url(assets/images/${art.gambar}); background-size: cover; background-position: center;">
-                        <span style="background: rgba(0,0,0,0.5); color: white; padding: 5px;">${art.judul}</span>
-                    </div>
-                    <div class="gallery-info"><div class="gallery-title">${art.judul}</div><div class="gallery-desc">${art.deskripsi}</div></div>
-                </div>`);
+            fetchAndRender(`${pathPrefix}art.json`, document.getElementById('galleryGrid'), (art, index) => {
+                if (!art.gambar) return '';
+
+                const hasInfo = art.judul || art.deskripsi;
+
+                return `
+                    <div class="gallery-item" style="animation-delay: ${(index * 0.15)}s" onclick="openImageModal('assets/images/${art.gambar}')">
+                        <div class="gallery-img" style="background-image: url(assets/images/${art.gambar}); background-size: cover; background-position: center;">
+                        </div>
+                        ${hasInfo ? `
+                        <div class="gallery-info">
+                            ${art.judul ? `<div class="gallery-title">${art.judul}</div>` : ''}
+                            ${art.deskripsi ? `<div class="gallery-desc">${art.deskripsi}</div>` : ''}
+                        </div>` : ''}
+                    </div>`;
+            });
             break;
         case 'about':
             fetch(`${pathPrefix}about.json`)
@@ -411,6 +420,15 @@ function playMusic(audioFile) {
     document.head.appendChild(style);
     document.body.appendChild(notification);
     setTimeout(() => { notification.remove(); style.remove(); }, 3000);
+}
+
+function openImageModal(src) {
+    const modal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('modal-image');
+    if (!modal || !modalImg) return;
+    
+    modal.classList.add('show');
+    modalImg.src = src;
 }
 
 document.addEventListener('keydown', (e) => {
@@ -498,6 +516,27 @@ window.addEventListener('load', () => {
                 } else {
                     persistentAudioPlayer.audio.pause();
                 }
+            }
+        });
+    }
+
+    const modal = document.getElementById('image-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    
+    if (modal && closeModalBtn) {
+        const closeModal = () => modal.classList.remove('show');
+        
+        closeModalBtn.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape" && modal.classList.contains('show')) {
+                closeModal();
             }
         });
     }
