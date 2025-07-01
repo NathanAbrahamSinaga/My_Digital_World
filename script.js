@@ -77,19 +77,22 @@ let isTyping = false;
 let typingTimeout = null; 
 
 const audioSystem = {
-    clickSound: null, pixelWipeSound: null, loadingMusic: null, introMusic: null,
+    clickSound: null, pixelWipeSound: null, loadingMusic: null, introMusic: null, rainSound: null,
     init() {
         const basePath = '';
         this.loadingMusic = new Audio(`${basePath}assets/music/train.wav`);
         this.loadingMusic.loop = false;
         this.introMusic = new Audio(`${basePath}assets/music/tokyo.mp3`);
         this.introMusic.loop = true;
+        this.rainSound = new Audio(`${basePath}assets/music/rain.mp3`);
+        this.rainSound.loop = true;
         this.clickSound = { play() { const ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); const o = ctx.createOscillator(), g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.setValueAtTime(800, ctx.currentTime); g.gain.setValueAtTime(0.1, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.1); } };
         this.pixelWipeSound = { play() { const ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); const gain = ctx.createGain(); gain.connect(ctx.destination); gain.gain.setValueAtTime(0.4, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6); const noise = ctx.createBufferSource(); const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.6, ctx.sampleRate); const data = buffer.getChannelData(0); for (let i = 0; i < data.length; i++) { data[i] = Math.random() * 2 - 1; } noise.buffer = buffer; const bandpass = ctx.createBiquadFilter(); bandpass.type = "bandpass"; bandpass.frequency.setValueAtTime(200, ctx.currentTime); bandpass.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.4); bandpass.Q.value = 10; noise.connect(bandpass); bandpass.connect(gain); noise.start(ctx.currentTime); noise.stop(ctx.currentTime + 0.6); } };
     },
     playLoadingMusic() { if (this.loadingMusic) this.loadingMusic.play().catch(e => console.error("Gagal memutar audio loading:", e)); },
     playIntroMusic() { if (this.introMusic) this.introMusic.play().catch(e => console.error("Gagal memutar audio intro:", e)); },
     stopIntroMusic() { if (this.introMusic) { this.introMusic.pause(); this.introMusic.currentTime = 0; } },
+    playRainSound() { if(this.rainSound) { this.rainSound.volume = 0.5; this.rainSound.play().catch(e => console.error("Gagal memutar audio hujan:", e)); } },
     playClick() { if (this.clickSound) this.clickSound.play(); },
     playPixelWipe() { if (this.pixelWipeSound) this.pixelWipeSound.play(); }
 };
@@ -171,6 +174,46 @@ function createLeaves() {
         container.appendChild(leaf);
         setTimeout(() => leaf.remove(), 8000);
     }, 2000);
+}
+
+function createRain() {
+    const rainContainer = document.getElementById('rain-container');
+    if (!rainContainer) return;
+    
+    let rainHTML = '';
+    for (let i = 0; i < 100; i++) {
+        const left = Math.floor(Math.random() * 100);
+        const duration = Math.random() * 0.5 + 0.3;
+        const delay = Math.random() * 5;
+        rainHTML += `<div class="raindrop" style="left: ${left}vw; animation-duration: ${duration}s; animation-delay: ${delay}s;"></div>`;
+    }
+    rainContainer.innerHTML = rainHTML;
+}
+
+function createRainyClouds() {
+    const bgContainer = document.querySelector('.bg-container');
+    if (!bgContainer) return;
+
+    const numberOfClouds = 5 + Math.floor(Math.random() * 4);
+
+    for (let i = 0; i < numberOfClouds; i++) {
+        const cloud = document.createElement('div');
+        cloud.className = 'clouds';
+
+        const top = Math.random() * 40;
+        const scale = 0.6 + Math.random() * 0.7;
+        const duration = 25 + Math.random() * 40;
+        const delay = Math.random() * -50;
+        const opacity = 0.7 + Math.random() * 0.3;
+
+        cloud.style.top = `${top}%`;
+        cloud.style.transform = `scale(${scale})`;
+        cloud.style.animationDuration = `${duration}s`;
+        cloud.style.animationDelay = `${delay}s`;
+        cloud.style.opacity = opacity;
+
+        bgContainer.appendChild(cloud);
+    }
 }
 
 function triggerPixelTransition(onCovered, onComplete) {
@@ -416,9 +459,21 @@ function createParticles() {
 }
 
 function initializeAmbientEffects() {
-    if (document.querySelector('.leaf-container') || document.querySelector('canvas.ambient-particles')) return;
-    createLeaves();
-    setTimeout(createParticles, 1000);
+    if (document.body.dataset.effectsInitialized) return;
+
+    const isRainy = Math.random() < 0.5;
+
+    if (isRainy) {
+        document.body.classList.add('rainy-weather');
+        createRain();
+        audioSystem.playRainSound();
+        createRainyClouds(); 
+    } else {
+        createLeaves();
+        setTimeout(createParticles, 1000);
+    }
+    
+    document.body.dataset.effectsInitialized = 'true';
 }
 
 window.addEventListener('load', () => {

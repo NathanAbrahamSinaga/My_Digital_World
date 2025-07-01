@@ -171,6 +171,35 @@ body {
     }
 }
 
+#rain-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 3;
+}
+
+.raindrop {
+    position: absolute;
+    bottom: 100%;
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4));
+    animation: rain-fall 0.5s linear infinite;
+}
+
+@keyframes rain-fall {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(110vh);
+    }
+}
+
 .intro-container {
     position: fixed;
     top: 0;
@@ -795,4 +824,44 @@ body.intro-page #dialogBox {
 
 body.intro-page .dialog-text {
     color: #e0e0e0;
+}
+
+/* --- Rainy Weather Styles --- */
+body.rainy-weather {
+    background: linear-gradient(135deg, #6c7a89 0%, #7f8c9a 50%, #95a5a6 100%);
+}
+
+body.rainy-weather .city-bg {
+    background: linear-gradient(to bottom, 
+        rgba(108, 122, 137, 0.8) 0%,
+        rgba(127, 140, 154, 0.9) 50%,
+        rgba(100, 125, 100, 0.8) 100%);
+    background-image: 
+        repeating-linear-gradient(90deg, 
+            rgba(255,255,255,0.05) 0px, 
+            rgba(255,255,255,0.05) 1px, 
+            transparent 1px, 
+            transparent 20px),
+        repeating-linear-gradient(0deg, 
+            rgba(255,255,255,0.05) 0px, 
+            rgba(255,255,255,0.05) 1px, 
+            transparent 1px, 
+            transparent 20px);
+}
+
+body.rainy-weather .clouds {
+    background: rgba(127, 140, 154, 0.8);
+}
+body.rainy-weather .clouds::before,
+body.rainy-weather .clouds::after {
+    background: rgba(127, 140, 154, 0.8);
+}
+
+body.rainy-weather .bg-pixel-gif {
+    filter: brightness(0.85);
+}
+
+body.rainy-weather .leaf-container,
+body.rainy-weather canvas.ambient-particles {
+    display: none;
 }
