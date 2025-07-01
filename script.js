@@ -75,6 +75,7 @@ const dialogSequence = [
 let currentDialogIndex = 0;
 let isTyping = false;
 let typingTimeout = null; 
+let airplaneIntervalId = null;
 
 const audioSystem = {
     clickSound: null, pixelWipeSound: null, loadingMusic: null, introMusic: null, rainSound: null,
@@ -214,6 +215,72 @@ function createRainyClouds() {
 
         bgContainer.appendChild(cloud);
     }
+}
+
+function spawnAirplane() {
+    if (document.body.classList.contains('rainy-weather') || document.querySelector('.airplane-container')) {
+        return;
+    }
+
+    const container = document.querySelector('.pixel-art-elements');
+    if (!container) return;
+
+    const airplaneContainer = document.createElement('div');
+    airplaneContainer.className = 'airplane-container';
+
+    const airplaneImg = document.createElement('img');
+    const basePath = (window.location.pathname.includes('/pages/')) ? '../' : '';
+    airplaneImg.src = `${basePath}assets/images/airplane.png`;
+    airplaneImg.alt = 'Pixel art airplane';
+    airplaneContainer.appendChild(airplaneImg);
+
+    const topPosition = 5 + Math.random() * 25;
+    airplaneContainer.style.top = `${topPosition}%`;
+
+    const direction = Math.random() > 0.5 ? 'left-to-right' : 'right-to-left';
+    airplaneContainer.classList.add(`fly-${direction}`);
+    
+    container.appendChild(airplaneContainer);
+
+    const smokeIntervalId = setInterval(() => {
+        if (!document.body.contains(airplaneContainer)) {
+            clearInterval(smokeIntervalId);
+            return;
+        }
+        createSmokePuff(airplaneContainer, direction);
+    }, 150);
+
+    setTimeout(() => {
+        clearInterval(smokeIntervalId);
+        airplaneContainer.remove();
+    }, 12000);
+}
+
+function createSmokePuff(airplaneEl, direction) {
+    const container = document.querySelector('.pixel-art-elements');
+    if (!container) return;
+
+    const rect = airplaneEl.getBoundingClientRect();
+    if (rect.width === 0) return;
+
+    const puff = document.createElement('div');
+    puff.className = 'smoke-puff';
+    
+    const tailOffsetX = direction === 'left-to-right' ? 5 : rect.width - 20;
+    const tailOffsetY = (rect.height / 2) + (Math.random() * 6 - 3);
+
+    puff.style.left = `${rect.left + tailOffsetX}px`;
+    puff.style.top = `${rect.top + tailOffsetY}px`;
+
+    const size = 5 + Math.random() * 8;
+    puff.style.width = `${size}px`;
+    puff.style.height = `${size}px`;
+
+    container.appendChild(puff);
+
+    puff.addEventListener('animationend', () => {
+        puff.remove();
+    });
 }
 
 function triggerPixelTransition(onCovered, onComplete) {
@@ -491,6 +558,10 @@ function initializeAmbientEffects() {
     } else {
         createLeaves();
         setTimeout(createParticles, 1000);
+        if (airplaneIntervalId === null) {
+            setTimeout(spawnAirplane, Math.random() * 5000 + 2000); 
+            airplaneIntervalId = setInterval(spawnAirplane, 30000);
+        }
     }
     
     document.body.dataset.effectsInitialized = 'true';

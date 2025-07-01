@@ -150,6 +150,65 @@ body {
     display: none;
 }
 
+.airplane-container {
+    position: absolute;
+    width: 120px;
+    height: auto;
+    z-index: 2;
+    pointer-events: none;
+    image-rendering: pixelated;
+}
+
+.airplane-container img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
+}
+
+.fly-left-to-right {
+    left: -150px;
+    animation: fly-left-to-right 12s linear forwards;
+}
+
+.fly-left-to-right img {
+    transform: scaleX(-1);
+}
+
+.fly-right-to-left {
+    right: -150px;
+    animation: fly-right-to-left 12s linear forwards;
+}
+
+@keyframes fly-left-to-right {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(100vw + 200px)); }
+}
+
+@keyframes fly-right-to-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-100vw - 200px)); }
+}
+
+.smoke-puff {
+    position: absolute; 
+    background-color: rgba(48, 45, 45, 0.7);
+    border-radius: 0;
+    animation: puff-and-fade 2.5s ease-out forwards;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes puff-and-fade {
+    0% {
+        transform: scale(0.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.8);
+        opacity: 0;
+    }
+}
+
 .leaf {
     position: absolute;
     width: 12px;
@@ -885,7 +944,6 @@ body.rainy-weather canvas.ambient-particles {
     to { transform: scale(1); opacity: 1; }
 }
 
-/* --- Responsive Styles --- */
 @media (max-width: 768px) {
     #dialogBox {
         width: 95%;
