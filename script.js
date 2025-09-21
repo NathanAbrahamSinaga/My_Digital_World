@@ -358,8 +358,11 @@ function skipIntro() {
                 mainApp.style.display = 'block';
 
                 initializeAmbientEffects();
-                showMainMenu(true);
+                showMainMenu();
                 persistentAudioPlayer.initializeOnLoad();
+            },
+            () => {
+                mainApp.style.opacity = '1';
             }
         );
     }, 500);
@@ -390,23 +393,21 @@ function startIntro() {
 function showPage(pageName) {
     audioSystem.playClick();
     const mainNav = document.getElementById('mainNav');
-    const backBtn = document.getElementById('main-back-btn');
+    const backBtn = document.getElementById('main-back-btn'); 
+
+    if (mainNav) mainNav.style.display = 'none';
+    if (backBtn) backBtn.style.display = 'block'; 
+
+    document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
+
     const targetPage = document.getElementById(pageName + 'Page');
-
-    if (!mainNav || !targetPage) return;
-
-    mainNav.classList.remove('visible');
-    
-    setTimeout(() => {
-        if (backBtn) backBtn.classList.add('visible');
-        document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
-        
+    if (targetPage) {
         targetPage.classList.add('active');
         if (!targetPage.dataset.loaded) {
             loadPageContent(pageName);
             targetPage.dataset.loaded = 'true';
         }
-    }, 300);
+    }
 }
 
 function closePlayer(playerItem) {
@@ -427,27 +428,19 @@ function closePlayer(playerItem) {
     }
 }
 
-function showMainMenu(isInitial = false) {
-    if (!isInitial) {
-        audioSystem.playClick();
-    }
-    
+function showMainMenu() {
+    audioSystem.playClick();
     const mainNav = document.getElementById('mainNav');
     const backBtn = document.getElementById('main-back-btn');
-    const activePage = document.querySelector('.page-content.active');
-
-    if (activePage) {
-        activePage.classList.remove('active');
-    }
 
     closePlayer(activePlayer.left);
     closePlayer(activePlayer.right);
     activePlayer = { left: null, right: null };
 
-    setTimeout(() => {
-        if (mainNav) mainNav.classList.add('visible');
-        if (backBtn) backBtn.classList.remove('visible'); 
-    }, activePage ? 300 : 0);
+    document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
+    
+    if (mainNav) mainNav.style.display = 'flex';
+    if (backBtn) backBtn.style.display = 'none'; 
 }
 
 function loadPageContent(pageName) {
