@@ -653,7 +653,7 @@ body {
     margin-top: 5px;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.5s ease-out;
+    transition: max-height 0.5s ease-in-out;
 }
 
 .music-item.playing .player-container {

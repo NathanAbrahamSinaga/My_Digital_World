@@ -414,12 +414,18 @@ function closePlayer(playerItem) {
     if (!playerItem) return;
     const playerContainer = playerItem.querySelector('.player-container');
     const playBtn = playerItem.querySelector('.play-btn');
+
     playerItem.classList.remove('playing');
-    if(playBtn) {
+    if (playBtn) {
         playBtn.classList.remove('playing');
         playBtn.innerHTML = '▶ Play';
     }
-    if (playerContainer) playerContainer.innerHTML = '';
+
+    if (playerContainer) {
+        playerContainer.addEventListener('transitionend', () => {
+            playerContainer.innerHTML = '';
+        }, { once: true });
+    }
 }
 
 function showMainMenu() {
