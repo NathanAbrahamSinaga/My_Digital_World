@@ -531,12 +531,12 @@ body {
     border-radius: 12px;
     padding: 25px;
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-    animation: slide-in 0.6s ease-out;
+    animation: slide-in 0.6s ease-out forwards;
 }
 
 @keyframes slide-in {
-    0% { opacity: 0; transform: translateX(-30px); }
-    100% { opacity: 1; transform: translateX(0); }
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
 .blog-post h3 {
@@ -577,9 +577,16 @@ body {
     font-size: 9px;
 }
 
-.music-list {
+.music-container {
     display: grid;
-    gap: 20px;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.music-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
 
 .music-item {
@@ -588,13 +595,21 @@ body {
     border-radius: 12px;
     padding: 20px;
     display: flex;
-    align-items: center;
-    gap: 20px;
+    flex-direction: column;
+    gap: 15px;
     transition: all 0.3s ease;
+    animation: slide-in 0.6s ease-out forwards;
+    opacity: 0;
+}
+
+.music-item-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
 }
 
 .music-item:hover {
-    transform: translateX(10px);
+    transform: translateY(-5px);
     box-shadow: 0 8px 32px rgba(74, 144, 226, 0.3);
 }
 
@@ -622,11 +637,40 @@ body {
     font-size: 8px;
     cursor: var(--nes-cursor-pointer), auto;
     transition: all 0.3s ease;
+    margin-left: 20px;
+}
+
+.play-btn.playing {
+    background: #FF6B6B;
 }
 
 .play-btn:hover {
-    background: #32CD32;
     transform: scale(1.1);
+}
+
+.player-container {
+    width: 100%;
+    margin-top: 5px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+}
+
+.music-item.playing .player-container {
+    max-height: 500px;
+}
+
+.player-container iframe,
+.player-container audio {
+    width: 100%;
+    border-radius: 8px;
+    border: none;
+}
+
+.player-container iframe {
+    aspect-ratio: 16 / 9;
+    height: auto;
+    min-height: 180px;
 }
 
 .gallery-grid {
@@ -959,6 +1003,10 @@ body.rainy-weather canvas.ambient-particles {
     }
     
     .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .music-container {
         grid-template-columns: 1fr;
     }
 

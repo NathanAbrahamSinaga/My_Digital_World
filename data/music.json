@@ -1,26 +1,32 @@
 [
     {
-        "type": "spotify",
-        "judul": "Tokyo Rain",
-        "artis": "LuKremBo",
-        "source": "spotify:track:0K3rY4t5nNzt4pGPHL3p46"
-    },
-    {
+        "judul": "I Really2x Miss You",
+        "artis": "Miraie",
         "type": "youtube",
-        "judul": "Kyoto's Lofi Vibe",
-        "artis": "Lofi Girl",
-        "source": "jfKfPfyJRdk"
+        "id": "YSDJvWSBrOM"
+    },
+]
+
+
+/*
+[
+    {
+        "judul": "Sincerely",
+        "artis": "TRUE",
+        "type": "spotify",
+        "id": "73cGVRpESgJ2hs04fj5jUe"
     },
     {
-        "type": "youtube-music",
-        "judul": "City Pop",
-        "artis": "Various Artists",
-        "source": "mGgV9t5D-bE"
-    },
-    {
+        "judul": "Local Beat Sample",
+        "artis": "XTempest",
         "type": "mp3",
-        "judul": "Future Updates",
-        "artis": "Stay Tuned",
-        "source": "future_song.mp3"
+        "id": "assets/music/bg.mp3"
+    },
+    {
+        "judul": "Next Track",
+        "artis": "Coming Soon",
+        "type": "none",
+        "id": ""
     }
 ]
+*/

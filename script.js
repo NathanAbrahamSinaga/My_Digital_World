@@ -76,6 +76,7 @@ let currentDialogIndex = 0;
 let isTyping = false;
 let typingTimeout = null; 
 let airplaneIntervalId = null;
+let activePlayer = { left: null, right: null };
 
 const audioSystem = {
     clickSound: null, pixelWipeSound: null, loadingMusic: null, introMusic: null, rainSound: null,
@@ -409,10 +410,26 @@ function showPage(pageName) {
     }
 }
 
+function closePlayer(playerItem) {
+    if (!playerItem) return;
+    const playerContainer = playerItem.querySelector('.player-container');
+    const playBtn = playerItem.querySelector('.play-btn');
+    playerItem.classList.remove('playing');
+    if(playBtn) {
+        playBtn.classList.remove('playing');
+        playBtn.innerHTML = '▶ Play';
+    }
+    if (playerContainer) playerContainer.innerHTML = '';
+}
+
 function showMainMenu() {
     audioSystem.playClick();
     const mainNav = document.getElementById('mainNav');
     const backBtn = document.getElementById('main-back-btn');
+
+    closePlayer(activePlayer.left);
+    closePlayer(activePlayer.right);
+    activePlayer = { left: null, right: null };
 
     document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
     
@@ -425,25 +442,49 @@ function loadPageContent(pageName) {
     switch(pageName) {
         case 'blog':
             fetchAndRender(`${pathPrefix}blog.json`, document.getElementById('blogPosts'), (post, index) => `
-                <div class="blog-post" style="animation-delay: ${(index * 0.2)}s">
+                <div class="blog-post" style="animation-delay: ${(index * 0.1)}s">
                     <h3>${post.judul}</h3>
                     <div class="blog-post-content">${post.isi}</div>
                     <div class="blog-date">${post.tanggal}</div>
                 </div>`);
             break;
         case 'music':
-            fetchAndRender(`${pathPrefix}music.json`, document.getElementById('musicList'), (music, index) => `
-                <div class="music-item" style="animation-delay: ${(index * 0.1)}s">
-                    <div class="music-info"><div class="music-title">${music.judul}</div><div class="music-artist">${music.artis}</div></div>
-                    <button class="play-btn" onclick="playMusic('${music.audio}')">▶ Play</button>
-                </div>`);
+            const leftCol = document.getElementById('musicListLeft');
+            const rightCol = document.getElementById('musicListRight');
+            if (!leftCol || !rightCol) return;
+
+            fetch(`${pathPrefix}music.json`)
+                .then(res => res.json())
+                .then(data => {
+                    let leftHTML = '';
+                    let rightHTML = '';
+                    data.forEach((music, index) => {
+                        const itemHTML = `
+                            <div class="music-item" style="animation-delay: ${(index * 0.1)}s">
+                                <div class="music-item-header">
+                                    <div class="music-info">
+                                        <div class="music-title">${music.judul}</div>
+                                        <div class="music-artist">${music.artis}</div>
+                                    </div>
+                                    ${music.type !== 'none' ? `<button class="play-btn" onclick="playMusic(this, '${music.type}', '${music.id}')">▶ Play</button>` : ''}
+                                </div>
+                                <div class="player-container"></div>
+                            </div>`;
+                        if (index % 2 === 0) {
+                            leftHTML += itemHTML;
+                        } else {
+                            rightHTML += itemHTML;
+                        }
+                    });
+                    leftCol.innerHTML = leftHTML;
+                    rightCol.innerHTML = rightHTML;
+                })
+                .catch(err => console.error(`Gagal memuat ${pageName}:`, err));
             break;
         case 'art':
             fetchAndRender(`${pathPrefix}art.json`, document.getElementById('galleryGrid'), (art, index) => {
                 if (!art.gambar) return '';
-
                 const hasInfo = art.judul || art.deskripsi;
-
                 return `
                     <div class="gallery-item" style="animation-delay: ${(index * 0.15)}s" onclick="openImageModal('assets/images/${art.gambar}')">
                         <div class="gallery-img" style="background-image: url(assets/images/${art.gambar}); background-size: cover; background-position: center;">
@@ -478,17 +519,54 @@ function fetchAndRender(url, container, template) {
         .catch(error => console.error(`Gagal memuat data dari ${url}:`, error));
 }
 
+function stopAllAmbientSounds() {
+    if (persistentAudioPlayer.audio && !persistentAudioPlayer.audio.paused) {
+        persistentAudioPlayer.audio.pause();
+    }
+    if (audioSystem.rainSound && !audioSystem.rainSound.paused) {
+        audioSystem.rainSound.pause();
+    }
+}
 
-function playMusic(audioFile) {
+function playMusic(btnElement, type, id) {
     audioSystem.playClick();
-    const notification = document.createElement('div');
-    notification.style.cssText = `position: fixed; top: 20px; right: 20px; background: rgba(144, 238, 144, 0.9); color: #333; padding: 15px 25px; border: 2px solid #333; border-radius: 8px; font-family: 'Press Start 2P', cursive; font-size: 10px; z-index: 1000; animation: slideIn 0.5s ease-out;`;
-    notification.textContent = `🎵 This feature is under development. Playing: ${audioFile}`;
-    const style = document.createElement('style');
-    style.textContent = `@keyframes slideIn { 0% { transform: translateX(100%); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }`;
-    document.head.appendChild(style);
-    document.body.appendChild(notification);
-    setTimeout(() => { notification.remove(); style.remove(); }, 3000);
+    const thisMusicItem = btnElement.closest('.music-item');
+    const column = btnElement.closest('.music-column');
+    const columnKey = column.id === 'musicListLeft' ? 'left' : 'right';
+
+    const currentlyPlayingItem = activePlayer[columnKey];
+
+    if (currentlyPlayingItem && currentlyPlayingItem !== thisMusicItem) {
+        closePlayer(currentlyPlayingItem);
+    }
+    
+    if (thisMusicItem.classList.contains('playing')) {
+        closePlayer(thisMusicItem);
+        activePlayer[columnKey] = null;
+        return;
+    }
+
+    stopAllAmbientSounds();
+    
+    const playerContainer = thisMusicItem.querySelector('.player-container');
+    thisMusicItem.classList.add('playing');
+    btnElement.classList.add('playing');
+    btnElement.innerHTML = '■ Stop';
+    activePlayer[columnKey] = thisMusicItem;
+    
+    let embedHtml = '';
+    switch (type) {
+        case 'mp3':
+            embedHtml = `<audio controls autoplay src="${id}"></audio>`;
+            break;
+        case 'youtube':
+            embedHtml = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            break;
+        case 'spotify':
+            embedHtml = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+            break;
+    }
+    playerContainer.innerHTML = embedHtml;
 }
 
 function openImageModal(src) {
