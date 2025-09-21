@@ -432,11 +432,48 @@ function loadPageContent(pageName) {
                 </div>`);
             break;
         case 'music':
-            fetchAndRender(`${pathPrefix}music.json`, document.getElementById('musicList'), (music, index) => `
-                <div class="music-item" style="animation-delay: ${(index * 0.1)}s">
-                    <div class="music-info"><div class="music-title">${music.judul}</div><div class="music-artist">${music.artis}</div></div>
-                    <button class="play-btn" onclick="playMusic('${music.audio}')">▶ Play</button>
-                </div>`);
+            fetchAndRender(`${pathPrefix}music.json`, document.getElementById('musicList'), (music, index) => {
+                let contentHTML = '';
+                switch(music.type) {
+                    case 'spotify':
+                        contentHTML = `
+                            <div class="music-embed-container spotify">
+                                <iframe src="https://open.spotify.com/embed/${music.source.replace('spotify:', '').replace(':', '/')}" 
+                                width="100%" height="152" frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            </div>`;
+                        break;
+                    case 'youtube':
+                        contentHTML = `
+                            <div class="music-embed-container">
+                                <iframe src="https://www.youtube.com/embed/${music.source}" 
+                                title="YouTube video player" frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>`;
+                        break;
+                    case 'youtube-music':
+                        contentHTML = `
+                            <div class="music-embed-container">
+                                <iframe src="https://www.youtube.com/embed/${music.source}"
+                                title="YouTube Music video player" frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>`;
+                        break;
+                    case 'mp3':
+                    default:
+                        contentHTML = `
+                            <div class="mp3-controls">
+                                <div class="music-info"><div class="music-title">${music.judul}</div><div class="music-artist">${music.artis}</div></div>
+                                <button class="play-btn" onclick="playMusic('${music.source}')">▶ Play</button>
+                            </div>`;
+                        break;
+                }
+                
+                return `
+                    <div class="music-item" style="animation-delay: ${(index * 0.1)}s">
+                        ${music.type !== 'mp3' ? `<div class="music-info"><div class="music-title">${music.judul}</div><div class="music-artist">${music.artis}</div></div>` : ''}
+                        ${contentHTML}
+                    </div>`;
+            });
             break;
         case 'art':
             fetchAndRender(`${pathPrefix}art.json`, document.getElementById('galleryGrid'), (art, index) => {
