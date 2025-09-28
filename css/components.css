@@ -19,6 +19,7 @@
 .music-artist { color: #666; font-size: 10px; }
 .play-btn { padding: 8px 16px; background: #90EE90; border: 2px solid #333; border-radius: 8px; font-family: 'Press Start 2P', cursive; font-size: 8px; cursor: var(--nes-cursor-pointer), auto; transition: all 0.3s ease; margin-left: 20px; }
 .play-btn.playing { background: #FF6B6B; }
+.play-btn.playing:hover { background-color: #e05d5d; transform: scale(1.05); }
 .player-container { width: 100%; margin-top: 5px; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
 .music-item.playing .player-container { max-height: 500px; }
 .player-container iframe, .player-container audio { width: 100%; border-radius: 8px; border: none; }
