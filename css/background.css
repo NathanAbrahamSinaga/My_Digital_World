@@ -151,6 +151,9 @@ body.intro-page .leaf {
 .raindrop { position: absolute; bottom: 100%; width: 1px; height: 60px; background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4)); animation: rain-fall 0.5s linear infinite; }
 @keyframes rain-fall { from { transform: translateY(0); } to { transform: translateY(110vh); } }
 
+/* --- THEME STYLES --- */
+
+/* Rainy Theme */
 body.rainy-weather .city-bg {
     background: linear-gradient(to bottom, rgba(108, 122, 137, 0.8) 0%, rgba(127, 140, 154, 0.9) 50%, rgba(100, 125, 100, 0.8) 100%);
     background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 20px), repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 20px);
@@ -158,3 +161,56 @@ body.rainy-weather .city-bg {
 body.rainy-weather .clouds, body.rainy-weather .clouds::before, body.rainy-weather .clouds::after { background: rgba(127, 140, 154, 0.8); }
 body.rainy-weather .bg-pixel-gif { filter: brightness(0.85); }
 body.rainy-weather .leaf-container, body.rainy-weather canvas.ambient-particles { display: none; }
+
+/* Autumn Theme */
+body.autumn-weather .city-bg {
+    background: linear-gradient(to bottom, rgba(255, 183, 77, 0.8) 0%, rgba(255, 152, 0, 0.9) 50%, rgba(153, 114, 44, 0.8) 100%);
+    background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 20px), repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 20px);
+}
+body.autumn-weather .clouds, body.autumn-weather .clouds::before, body.autumn-weather .clouds::after { background: rgba(255, 248, 225, 0.8); }
+body.autumn-weather .leaf { background: linear-gradient(45deg, #e57373, #ffb74d); }
+body.autumn-weather #rain-container { display: none; }
+
+/* Night Theme */
+body.night-weather .city-bg {
+    background: linear-gradient(to bottom, rgba(13, 18, 56, 0.8) 0%, rgba(28, 27, 41, 0.9) 50%, rgba(25, 50, 25, 0.8) 100%);
+    background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 20px), repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 20px);
+}
+body.night-weather .clouds { display: none; }
+body.night-weather .bg-pixel-gif { filter: brightness(0.75); }
+body.night-weather .leaf-container, body.night-weather #rain-container { display: none; }
+body.night-weather .airplane-container img { filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2)) brightness(1.5); }
+
+.star {
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+    animation: twinkle 1.5s infinite alternate;
+    z-index: -1;
+}
+@keyframes twinkle {
+    from { opacity: 0.3; }
+    to { opacity: 1; transform: scale(1.05); }
+}
+
+/* Snowy Theme */
+body.snowy-weather .city-bg {
+    background: linear-gradient(to bottom, rgba(200, 210, 220, 0.8) 0%, rgba(210, 220, 230, 0.9) 50%, rgba(240, 240, 245, 0.9) 100%);
+    background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 1px, transparent 1px, transparent 20px), repeating-linear-gradient(0deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 1px, transparent 1px, transparent 20px);
+}
+body.snowy-weather .clouds, body.snowy-weather .clouds::before, body.snowy-weather .clouds::after { background: rgba(220, 225, 230, 0.8); }
+body.snowy-weather .bg-pixel-gif { filter: brightness(0.95); }
+body.snowy-weather .leaf-container, body.snowy-weather .airplane-container, body.snowy-weather canvas.ambient-particles { display: none; }
+
+.snowflake {
+    position: absolute;
+    top: -10px;
+    background-color: #fff;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: fall-snow 10s linear infinite;
+}
+@keyframes fall-snow {
+    0% { transform: translateY(0vh) translateX(0vw); opacity: 1; }
+    100% { transform: translateY(105vh) translateX(5vw); opacity: 0.5; }
+}

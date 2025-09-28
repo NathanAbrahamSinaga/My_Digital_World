@@ -1,26 +1,70 @@
-.pixel-transition {
+/* ===== GAYA TRANSISI LAMA DIHAPUS ===== */
+/* .pixel-transition { ... } */
+/* .pixel-bar { ... } */
+/* .pixel-transition.animate-in .pixel-bar { ... } */
+/* .pixel-transition.animate-out .pixel-bar { ... } */
+/* @keyframes pixel-grow { ... } */
+/* @keyframes pixel-shrink { ... } */
+
+/* ===== GAYA TRANSISI BLUR BARU DITAMBAHKAN ===== */
+.blur-transition-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
     z-index: 1500;
-    display: flex;
     pointer-events: none;
-    overflow: hidden;
+    background-color: rgba(28, 28, 40, 0);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px); /* Dukungan untuk Safari */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.6s ease, visibility 0.6s ease; /* Transisi fallback jika animasi gagal */
 }
-.pixel-bar {
-    width: 5%;
-    height: 100%;
-    background-color: rgb(40, 43, 53);
-    transform-origin: bottom;
-    transform: scaleY(0);
-}
-.pixel-transition.animate-in .pixel-bar { animation: pixel-grow 0.4s ease-in-out forwards; }
-.pixel-transition.animate-out .pixel-bar { transform-origin: top; animation: pixel-shrink 0.4s ease-in-out forwards; }
-@keyframes pixel-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-@keyframes pixel-shrink { from { transform: scaleY(1); } to { transform: scaleY(0); } }
 
+.blur-transition-overlay.active {
+    pointer-events: auto;
+    opacity: 1;
+    visibility: visible;
+}
+
+.blur-transition-overlay.animate-in {
+    animation: blur-in 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+.blur-transition-overlay.animate-out {
+    animation: blur-out 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+@keyframes blur-in {
+    from {
+        background-color: rgba(28, 28, 40, 0);
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+    }
+    to {
+        background-color: rgba(28, 28, 40, 0.3);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+}
+
+@keyframes blur-out {
+    from {
+        background-color: rgba(28, 28, 40, 0.3);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+    to {
+        background-color: rgba(28, 28, 40, 0);
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+    }
+}
+
+
+/* ===== Kode CSS lainnya tetap sama ===== */
 #main-app {
     display: none;
     opacity: 0;
@@ -81,5 +125,15 @@
 }
 .back-btn:hover { background: #FFB6C1; transform: translateY(-2px); }
 
-.top-right-controls { position: fixed; top: 20px; right: 20px; z-index: 200; }
-#music-toggle-btn { font-size: 14px; padding: 5px 10px; }
+.top-right-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 200;
+    display: flex;
+    gap: 10px;
+}
+#music-toggle-btn, #theme-toggle-btn {
+    font-size: 14px;
+    padding: 5px 10px;
+}

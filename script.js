@@ -1,3 +1,10 @@
+// [BARU] Tambahkan variabel global ini di bagian atas file
+let backgroundMusicPausedForPlayer = false;
+
+// --- DEKLARASI VARIABEL GLOBAL BARU DI ATAS ---
+const THEMES = ['normal', 'rainy', 'autumn', 'night', 'snowy'];
+let currentThemeIndex = 0;
+
 const persistentAudioPlayer = {
     audio: null,
     isInitialized: false,
@@ -25,7 +32,7 @@ const persistentAudioPlayer = {
             this.audio.pause();
             this.audio = null;
         }
-        const basePath = ''; 
+        const basePath = '';
         this.audio = new Audio(`${basePath}assets/music/bg.mp3`);
         this.audio.loop = true;
         this.audio.currentTime = startTime;
@@ -33,7 +40,7 @@ const persistentAudioPlayer = {
             console.error("Gagal memutar musik latar:", error);
             if (error.name === 'NotAllowedError') this.showAudioPrompt();
         });
-        
+
         this.audio.addEventListener('timeupdate', () => {
             if (this.audio) sessionStorage.setItem('musicCurrentTime', this.audio.currentTime);
         });
@@ -74,7 +81,7 @@ const dialogSequence = [
 
 let currentDialogIndex = 0;
 let isTyping = false;
-let typingTimeout = null; 
+let typingTimeout = null;
 let airplaneIntervalId = null;
 let activePlayer = { left: null, right: null };
 
@@ -94,11 +101,164 @@ const audioSystem = {
     playLoadingMusic() { if (this.loadingMusic) this.loadingMusic.play().catch(e => console.error("Gagal memutar audio loading:", e)); },
     playIntroMusic() { if (this.introMusic) this.introMusic.play().catch(e => console.error("Gagal memutar audio intro:", e)); },
     stopIntroMusic() { if (this.introMusic) { this.introMusic.pause(); this.introMusic.currentTime = 0; } },
-    playRainSound() { if(this.rainSound) { this.rainSound.volume = 0.5; this.rainSound.play().catch(e => console.error("Gagal memutar audio hujan:", e)); } },
+    playRainSound() { if(this.rainSound) { this.rainSound.volume = 0.4; this.rainSound.play().catch(e => console.error("Gagal memutar audio hujan:", e)); } },
+    stopRainSound() { if(this.rainSound) { this.rainSound.pause(); this.rainSound.currentTime = 0; } },
     playClick() { if (this.clickSound) this.clickSound.play(); },
     playPixelWipe() { if (this.pixelWipeSound) this.pixelWipeSound.play(); }
 };
 audioSystem.init();
+
+function triggerBlurTransition(onCovered, onComplete) {
+    const transitionEl = document.getElementById('blur-transition');
+    if (!transitionEl) {
+        if (onCovered) onCovered();
+        if (onComplete) onComplete();
+        return;
+    }
+
+    const animDuration = 600;
+
+    transitionEl.classList.add('active', 'animate-in');
+    audioSystem.playPixelWipe();
+
+    setTimeout(() => {
+        if (onCovered) {
+            onCovered();
+        }
+
+        transitionEl.classList.remove('animate-in');
+        transitionEl.classList.add('animate-out');
+
+        setTimeout(() => {
+            transitionEl.classList.remove('active', 'animate-out');
+            if (onComplete) {
+                onComplete();
+            }
+        }, animDuration);
+
+    }, animDuration);
+}
+
+
+function changeTheme() {
+    currentThemeIndex = (currentThemeIndex + 1) % THEMES.length;
+    const newTheme = THEMES[currentThemeIndex];
+
+    triggerBlurTransition(() => {
+        cleanupAmbientEffects();
+        applyTheme(newTheme);
+    });
+}
+
+function cleanupAmbientEffects() {
+    THEMES.forEach(theme => {
+        if (theme !== 'normal') {
+            document.body.classList.remove(`${theme}-weather`);
+        }
+    });
+    audioSystem.stopRainSound();
+    const leafContainer = document.querySelector('.leaf-container');
+    if (leafContainer) leafContainer.remove();
+    const rainContainer = document.getElementById('rain-container');
+    if (rainContainer) rainContainer.innerHTML = '';
+    document.querySelectorAll('.clouds.extra-cloud').forEach(cloud => cloud.remove());
+    document.querySelectorAll('.star').forEach(star => star.remove());
+    const particleCanvas = document.querySelector('canvas.ambient-particles');
+    if (particleCanvas) particleCanvas.remove();
+    if (airplaneIntervalId) {
+        clearInterval(airplaneIntervalId);
+        airplaneIntervalId = null;
+    }
+    document.querySelectorAll('.airplane-container').forEach(plane => plane.remove());
+}
+
+function applyTheme(themeName) {
+    switch (themeName) {
+        case 'rainy':
+            document.body.classList.add('rainy-weather');
+            createRain();
+            audioSystem.playRainSound();
+            createRainyClouds();
+            break;
+        case 'autumn':
+            document.body.classList.add('autumn-weather');
+            createLeaves();
+            setTimeout(createParticles, 1000);
+            if (airplaneIntervalId === null) {
+                setTimeout(spawnAirplane, Math.random() * 5000 + 2000);
+                airplaneIntervalId = setInterval(spawnAirplane, 30000);
+            }
+            break;
+        case 'night':
+            document.body.classList.add('night-weather');
+            createStars();
+            setTimeout(createParticles, 1000);
+            if (airplaneIntervalId === null) {
+                setTimeout(spawnAirplane, Math.random() * 15000 + 5000);
+                airplaneIntervalId = setInterval(spawnAirplane, 60000);
+            }
+            break;
+        case 'snowy':
+            document.body.classList.add('snowy-weather');
+            createSnow();
+            createRainyClouds();
+            break;
+        case 'normal':
+        default:
+            createLeaves();
+            setTimeout(createParticles, 1000);
+            if (airplaneIntervalId === null) {
+                setTimeout(spawnAirplane, Math.random() * 5000 + 2000);
+                airplaneIntervalId = setInterval(spawnAirplane, 30000);
+            }
+            break;
+    }
+}
+
+function initializeAmbientEffects() {
+    if (document.body.dataset.effectsInitialized) return;
+    currentThemeIndex = Math.floor(Math.random() * THEMES.length);
+    const initialTheme = THEMES[currentThemeIndex];
+    applyTheme(initialTheme);
+    document.body.dataset.effectsInitialized = 'true';
+}
+
+function skipIntro() {
+    const introContainer = document.getElementById('introContainer');
+    const mainApp = document.getElementById('main-app');
+    const mouth = document.querySelector('.mouth');
+    if (!introContainer || !mainApp || introContainer.style.opacity === '0') return;
+
+    audioSystem.stopIntroMusic();
+    if (isTyping && typingTimeout) { clearTimeout(typingTimeout); isTyping = false; }
+    if (mouth) mouth.classList.remove('talking');
+
+    introContainer.style.opacity = '0';
+
+    setTimeout(() => {
+        introContainer.style.display = 'none';
+
+        triggerBlurTransition(
+            () => {
+                const introVideo = document.getElementById('intro-video-bg');
+                const pixelArt = document.querySelector('.pixel-art-elements');
+
+                if (introVideo) introVideo.style.display = 'none';
+                document.body.classList.remove('intro-page');
+                if (pixelArt) pixelArt.style.display = 'block';
+                
+                mainApp.style.display = 'block';
+
+                initializeAmbientEffects();
+                showMainMenu();
+                persistentAudioPlayer.initializeOnLoad();
+            },
+            () => {
+                mainApp.style.opacity = '1';
+            }
+        );
+    }, 500);
+}
 
 function startLoading() {
     const loadingBarFill = document.getElementById('loadingBarFill');
@@ -197,21 +357,55 @@ function createRain() {
     rainContainer.innerHTML = rainHTML;
 }
 
+function createSnow() {
+    const snowContainer = document.getElementById('rain-container');
+    if (!snowContainer) return;
+    
+    let snowHTML = '';
+    for (let i = 0; i < 150; i++) {
+        const left = Math.random() * 100;
+        const duration = Math.random() * 5 + 5;
+        const delay = Math.random() * 10;
+        const size = Math.random() * 3 + 1;
+        const opacity = Math.random() * 0.5 + 0.3;
+        snowHTML += `<div class="snowflake" style="left: ${left}vw; width: ${size}px; height: ${size}px; opacity: ${opacity}; animation-duration: ${duration}s; animation-delay: ${delay}s;"></div>`;
+    }
+    snowContainer.innerHTML = snowHTML;
+}
+
+function createStars() {
+    const starContainer = document.querySelector('.bg-container');
+    if (!starContainer || document.querySelector('.star')) return;
+
+    for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = Math.random() * 2 + 1;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.animationDelay = `${Math.random() * 2}s`;
+        star.style.animationDuration = `${Math.random() * 1 + 1.5}s`;
+        starContainer.appendChild(star);
+    }
+}
+
 function createRainyClouds() {
     const bgContainer = document.querySelector('.bg-container');
     if (!bgContainer) return;
 
-    const numberOfClouds = 5 + Math.floor(Math.random() * 4);
+    const numberOfClouds = 8 + Math.floor(Math.random() * 5);
 
     for (let i = 0; i < numberOfClouds; i++) {
         const cloud = document.createElement('div');
-        cloud.className = 'clouds';
+        cloud.className = 'clouds extra-cloud';
 
         const top = Math.random() * 40;
-        const scale = 0.6 + Math.random() * 0.7;
-        const duration = 25 + Math.random() * 40;
+        const scale = 0.7 + Math.random() * 0.8;
+        const duration = 30 + Math.random() * 40;
         const delay = Math.random() * -50;
-        const opacity = 0.7 + Math.random() * 0.3;
+        const opacity = 0.6 + Math.random() * 0.3;
 
         cloud.style.top = `${top}%`;
         cloud.style.transform = `scale(${scale})`;
@@ -224,7 +418,7 @@ function createRainyClouds() {
 }
 
 function spawnAirplane() {
-    if (document.body.classList.contains('rainy-weather') || document.querySelector('.airplane-container')) {
+    if (document.body.classList.contains('rainy-weather') || document.body.classList.contains('snowy-weather') || document.querySelector('.airplane-container')) {
         return;
     }
 
@@ -289,99 +483,15 @@ function createSmokePuff(airplaneEl, direction) {
     });
 }
 
-function triggerPixelTransition(onCovered, onComplete) {
-    const transitionEl = document.getElementById('pixel-transition');
-    if (!transitionEl) {
-        if (onCovered) onCovered();
-        if (onComplete) onComplete();
-        return;
-    }
-
-    const barCount = 20;
-    const animDuration = 400;
-    const staggerDelay = 25;
-    const totalDuration = animDuration + (barCount * staggerDelay);
-
-    transitionEl.innerHTML = '';
-    for (let i = 0; i < barCount; i++) {
-        const bar = document.createElement('div');
-        bar.className = 'pixel-bar';
-        bar.style.animationDelay = `${i * staggerDelay}ms`;
-        transitionEl.appendChild(bar);
-    }
-
-    transitionEl.style.display = 'flex';
-    transitionEl.classList.add('animate-in');
-    audioSystem.playPixelWipe();
-
-    setTimeout(() => {
-        if (onCovered) {
-            onCovered();
-        }
-
-        transitionEl.classList.remove('animate-in');
-        transitionEl.classList.add('animate-out');
-        
-        const bars = transitionEl.querySelectorAll('.pixel-bar');
-        bars.forEach((bar, i) => {
-            bar.style.animationDelay = `${i * staggerDelay}ms`;
-        });
-
-        setTimeout(() => {
-            transitionEl.style.display = 'none';
-            transitionEl.classList.remove('animate-out');
-            if (onComplete) {
-                onComplete();
-            }
-        }, totalDuration);
-
-    }, totalDuration);
-}
-
-function skipIntro() {
-    const introContainer = document.getElementById('introContainer');
-    const mainApp = document.getElementById('main-app');
-    const mouth = document.querySelector('.mouth');
-    if (!introContainer || !mainApp || introContainer.style.opacity === '0') return;
-
-    audioSystem.stopIntroMusic();
-    if (isTyping && typingTimeout) { clearTimeout(typingTimeout); isTyping = false; }
-    if (mouth) mouth.classList.remove('talking');
-
-    introContainer.style.opacity = '0';
-
-    setTimeout(() => {
-        introContainer.style.display = 'none';
-
-        triggerPixelTransition(
-            () => {
-                const introVideo = document.getElementById('intro-video-bg');
-                const pixelArt = document.querySelector('.pixel-art-elements');
-
-                if (introVideo) introVideo.style.display = 'none';
-                document.body.classList.remove('intro-page');
-                if (pixelArt) pixelArt.style.display = 'block';
-                
-                mainApp.style.display = 'block';
-
-                initializeAmbientEffects();
-                showMainMenu();
-                persistentAudioPlayer.initializeOnLoad();
-            },
-            () => {
-                mainApp.style.opacity = '1';
-            }
-        );
-    }, 500);
-}
-
 function startIntro() {
     const dialogText = document.getElementById('dialogText'), continueBtn = document.getElementById('continueBtn'), skipBtn = document.getElementById('skipBtn');
     if (!dialogText || !continueBtn || !skipBtn) return;
     function showNextDialog() {
         if (currentDialogIndex < dialogSequence.length) {
             typeWriter(dialogText, dialogSequence[currentDialogIndex], () => {
-                if (currentDialogIndex === dialogSequence.length - 1) continueBtn.textContent = "Let's Go!";
+                if (currentDialogIndex === dialogSequence.length) {
+                    continueBtn.textContent = "Let's Go!";
+                }
             });
             currentDialogIndex++;
         } else {
@@ -417,6 +527,7 @@ function showPage(pageName) {
     }
 }
 
+// [PERBAIKAN] Fungsi ini diubah untuk melanjutkan musik latar
 function closePlayer(playerItem) {
     if (!playerItem) return;
     const playerContainer = playerItem.querySelector('.player-container');
@@ -432,6 +543,14 @@ function closePlayer(playerItem) {
         playerContainer.addEventListener('transitionend', () => {
             playerContainer.innerHTML = '';
         }, { once: true });
+    }
+
+    // [BARU] Logika untuk melanjutkan musik latar
+    if (backgroundMusicPausedForPlayer) {
+        if (persistentAudioPlayer.audio) {
+            persistentAudioPlayer.audio.play().catch(e => console.error("Gagal melanjutkan musik latar:", e));
+        }
+        backgroundMusicPausedForPlayer = false; // Reset flag
     }
 }
 
@@ -532,15 +651,10 @@ function fetchAndRender(url, container, template) {
         .catch(error => console.error(`Gagal memuat data dari ${url}:`, error));
 }
 
-function stopAllAmbientSounds() {
-    if (persistentAudioPlayer.audio && !persistentAudioPlayer.audio.paused) {
-        persistentAudioPlayer.audio.pause();
-    }
-    if (audioSystem.rainSound && !audioSystem.rainSound.paused) {
-        audioSystem.rainSound.pause();
-    }
-}
+// [PERBAIKAN] Fungsi ini dihilangkan karena logikanya dipindah
+// function stopAllAmbientSounds() { ... }
 
+// [PERBAIKAN] Fungsi ini sekarang menangani logika jeda/lanjutkan musik latar
 function playMusic(btnElement, type, id) {
     audioSystem.playClick();
     const thisMusicItem = btnElement.closest('.music-item');
@@ -559,7 +673,15 @@ function playMusic(btnElement, type, id) {
         return;
     }
 
-    stopAllAmbientSounds();
+    // [BARU] Logika untuk menjeda musik latar
+    if (persistentAudioPlayer.audio && !persistentAudioPlayer.audio.paused) {
+        persistentAudioPlayer.audio.pause();
+        backgroundMusicPausedForPlayer = true; // Set flag
+    } else {
+        backgroundMusicPausedForPlayer = false; // Musik sudah dijeda, jangan dilanjutkan nanti
+    }
+
+    audioSystem.stopRainSound(); // Hentikan hujan jika ada
     
     const playerContainer = thisMusicItem.querySelector('.player-container');
     thisMusicItem.classList.add('playing');
@@ -622,13 +744,16 @@ function createParticles() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     document.body.appendChild(canvas);
+    
+    const particleColor = document.body.classList.contains('night-weather') ? '#f3c623' : '#87CEEB';
+
     for (let i = 0; i < 20; i++) particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, life: Math.random() * 100 + 100, maxLife: Math.random() * 100 + 100 });
     function updateParticles() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach((p, i) => {
             p.x += p.vx; p.y += p.vy; p.life--;
             if (p.life <= 0 || p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height) particles[i] = { x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, life: Math.random() * 100 + 100, maxLife: Math.random() * 100 + 100 };
-            ctx.save(); ctx.globalAlpha = (p.life / p.maxLife) * 0.3; ctx.fillStyle = '#87CEEB'; ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+            ctx.save(); ctx.globalAlpha = (p.life / p.maxLife) * 0.3; ctx.fillStyle = particleColor; ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI * 2); ctx.fill(); ctx.restore();
         });
         requestAnimationFrame(updateParticles);
     }
@@ -636,33 +761,12 @@ function createParticles() {
     window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 }
 
-function initializeAmbientEffects() {
-    if (document.body.dataset.effectsInitialized) return;
-
-    const isRainy = Math.random() < 0.5;
-
-    if (isRainy) {
-        document.body.classList.add('rainy-weather');
-        createRain();
-        audioSystem.playRainSound();
-        createRainyClouds(); 
-    } else {
-        createLeaves();
-        setTimeout(createParticles, 1000);
-        if (airplaneIntervalId === null) {
-            setTimeout(spawnAirplane, Math.random() * 5000 + 2000); 
-            airplaneIntervalId = setInterval(spawnAirplane, 30000);
-        }
-    }
-    
-    document.body.dataset.effectsInitialized = 'true';
-}
-
 window.addEventListener('load', () => {
     const startButton = document.getElementById('start-button');
     const startScreen = document.getElementById('start-screen');
     const loadingScreen = document.getElementById('loadingScreen');
-    const musicToggleButton = document.getElementById('music-toggle-btn'); 
+    const musicToggleButton = document.getElementById('music-toggle-btn');
+    const themeToggleButton = document.getElementById('theme-toggle-btn');
 
     if (startButton && startScreen && loadingScreen) {
         startButton.addEventListener('click', () => {
@@ -681,6 +785,13 @@ window.addEventListener('load', () => {
                     persistentAudioPlayer.audio.pause();
                 }
             }
+        });
+    }
+
+    if (themeToggleButton) {
+        themeToggleButton.addEventListener('click', () => {
+            audioSystem.playClick();
+            changeTheme();
         });
     }
 

@@ -20,3 +20,15 @@ body.intro-page {
 body.rainy-weather {
     background: linear-gradient(135deg, #6c7a89 0%, #7f8c9a 50%, #95a5a6 100%);
 }
+
+body.autumn-weather {
+    background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 50%, #ffa726 100%);
+}
+
+body.night-weather {
+    background: linear-gradient(135deg, #020111 0%, #191621 50%, #3a3a52 100%);
+}
+
+body.snowy-weather {
+    background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 50%, #f6f7f9 100%);
+}
