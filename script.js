@@ -541,12 +541,12 @@ function showMascot() {
     const direction = Math.random() > 0.5 ? 'left' : 'right';
     mascot.classList.add(direction === 'left' ? 'enter-from-left' : 'enter-from-right');
     
-    mascot.addEventListener('animationend', function handler(e) {
-        if (e.animationName === 'slideAndFadeIn') {
+    mascot.addEventListener('animationend', (e) => {
+        if (e.animationName === 'slideAndFadeIn' && !mascot.classList.contains('is-exiting')) {
             mascot.classList.add('is-floating');
-            mascot.removeEventListener('animationend', handler);
         }
-    });
+    }, { once: true });
+    
     currentMascotElement = mascot;
 }
 
@@ -556,7 +556,7 @@ function hideMascot() {
     currentMascotElement.classList.remove('is-floating');
     currentMascotElement.classList.add('is-exiting');
 
-    currentMascotElement.addEventListener('animationend', function handler(e) {
+    currentMascotElement.addEventListener('animationend', (e) => {
         if (e.animationName === 'shrinkAndFadeOut') {
            if (currentMascotElement) currentMascotElement.remove();
            currentMascotElement = null;
@@ -708,10 +708,9 @@ function playMusic(btnElement, type, id) {
         }
         return;
     }
-
-    const currentlyPlayingItem = activePlayer[columnKey];
-    if (currentlyPlayingItem) {
-        closePlayerUI(currentlyPlayingItem);
+    
+    if (activePlayer[columnKey]) {
+        closePlayerUI(activePlayer[columnKey]);
     }
     
     if (persistentAudioPlayer.audio && !persistentAudioPlayer.audio.paused) {
