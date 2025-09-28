@@ -546,6 +546,8 @@ function showPage(pageName) {
         targetPage.classList.add('active');
         if (pageName === 'music') {
             showMascot();
+        } else {
+            hideMascot();
         }
         if (!targetPage.dataset.loaded) {
             loadPageContent(pageName);
@@ -577,15 +579,17 @@ function showMascot() {
 }
 
 function hideMascot() {
-    if (!currentMascotElement) return;
+    if (!currentMascotElement || currentMascotElement.classList.contains('is-exiting')) return;
 
     currentMascotElement.classList.remove('is-floating');
     currentMascotElement.classList.add('is-exiting');
 
     currentMascotElement.addEventListener('animationend', (e) => {
         if (e.animationName === 'shrinkAndFadeOut') {
-           if (currentMascotElement) currentMascotElement.remove();
-           currentMascotElement = null;
+           if (e.currentTarget) e.currentTarget.remove();
+           if (e.currentTarget === currentMascotElement) {
+               currentMascotElement = null;
+           }
         }
     }, { once: true });
 }
@@ -602,9 +606,7 @@ function closePlayerUI(playerItem) {
     }
 
     if (playerContainer) {
-        playerContainer.addEventListener('transitionend', () => {
-            playerContainer.innerHTML = '';
-        }, { once: true });
+        playerContainer.innerHTML = '';
     }
 }
 
