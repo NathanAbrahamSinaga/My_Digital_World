@@ -120,8 +120,9 @@ let currentDialogIndex = 0;
 let isTyping = false;
 let typingTimeout = null;
 let airplaneIntervalId = null;
-let activePlayer = { left: null, right: null };
+let activePlayer = null;
 let currentMascotElement = null;
+let activeThemeAudio = null;
 
 const audioSystem = {
     clickSound: null, pixelWipeSound: null, loadingMusic: null, introMusic: null, rainSound: null,
@@ -143,17 +144,15 @@ const audioSystem = {
         this.clickSound = { play() { const ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); const o = ctx.createOscillator(), g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.setValueAtTime(800, ctx.currentTime); g.gain.setValueAtTime(0.1, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.1); } };
         this.pixelWipeSound = { play() { const ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); const gain = ctx.createGain(); gain.connect(ctx.destination); gain.gain.setValueAtTime(0.4, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6); const noise = ctx.createBufferSource(); const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.6, ctx.sampleRate); const data = buffer.getChannelData(0); for (let i = 0; i < data.length; i++) { data[i] = Math.random() * 2 - 1; } noise.buffer = buffer; const bandpass = ctx.createBiquadFilter(); bandpass.type = "bandpass"; bandpass.frequency.setValueAtTime(200, ctx.currentTime); bandpass.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.4); bandpass.Q.value = 10; noise.connect(bandpass); bandpass.connect(gain); noise.start(ctx.currentTime); noise.stop(ctx.currentTime + 0.6); } };
     },
+    stopAllThemeSounds() {
+        this.rainSound.pause();
+        this.sunnyAndFallMusic.pause();
+        this.snowMusic.pause();
+        this.nightMusic.pause();
+    },
     playLoadingMusic() { if (this.loadingMusic) this.loadingMusic.play().catch(e => console.error("Gagal memutar audio loading:", e)); },
     playIntroMusic() { if (this.introMusic) this.introMusic.play().catch(e => console.error("Gagal memutar audio intro:", e)); },
     stopIntroMusic() { if (this.introMusic) { this.introMusic.pause(); this.introMusic.currentTime = 0; } },
-    playRainSound() { if(this.rainSound) { this.rainSound.volume = 0.4; this.rainSound.play().catch(e => console.error("Gagal memutar audio hujan:", e)); } },
-    stopRainSound() { if(this.rainSound) { this.rainSound.pause(); this.rainSound.currentTime = 0; } },
-    playSunnyAndFallMusic() { if(this.sunnyAndFallMusic) { this.sunnyAndFallMusic.volume = 0.4; this.sunnyAndFallMusic.play().catch(e => console.error("Gagal memutar audio:", e)); } },
-    stopSunnyAndFallMusic() { if(this.sunnyAndFallMusic) { this.sunnyAndFallMusic.pause(); this.sunnyAndFallMusic.currentTime = 0; } },
-    playSnowMusic() { if(this.snowMusic) { this.snowMusic.volume = 0.4; this.snowMusic.play().catch(e => console.error("Gagal memutar audio:", e)); } },
-    stopSnowMusic() { if(this.snowMusic) { this.snowMusic.pause(); this.snowMusic.currentTime = 0; } },
-    playNightMusic() { if(this.nightMusic) { this.nightMusic.volume = 0.4; this.nightMusic.play().catch(e => console.error("Gagal memutar audio:", e)); } },
-    stopNightMusic() { if(this.nightMusic) { this.nightMusic.pause(); this.nightMusic.currentTime = 0; } },
     playClick() { if (this.clickSound) this.clickSound.play(); },
     playPixelWipe() { if (this.pixelWipeSound) this.pixelWipeSound.play(); }
 };
@@ -207,10 +206,8 @@ function cleanupAmbientEffects() {
             document.body.classList.remove(`${theme}-weather`);
         }
     });
-    audioSystem.stopRainSound();
-    audioSystem.stopSunnyAndFallMusic();
-    audioSystem.stopSnowMusic();
-    audioSystem.stopNightMusic();
+    audioSystem.stopAllThemeSounds();
+    activeThemeAudio = null;
     const leafContainer = document.querySelector('.leaf-container');
     if (leafContainer) leafContainer.remove();
     const rainContainer = document.getElementById('rain-container');
@@ -227,17 +224,23 @@ function cleanupAmbientEffects() {
 }
 
 function applyTheme(themeName) {
+    const playAudio = (audio) => {
+        audio.volume = 0.4;
+        audio.play().catch(e => console.error("Gagal memutar audio tema:", e));
+        activeThemeAudio = audio;
+    };
+
     switch (themeName) {
         case 'rainy':
             document.body.classList.add('rainy-weather');
             createRain();
-            audioSystem.playRainSound();
+            playAudio(audioSystem.rainSound);
             createRainyClouds();
             break;
         case 'autumn':
             document.body.classList.add('autumn-weather');
             createLeaves();
-            audioSystem.playSunnyAndFallMusic();
+            playAudio(audioSystem.sunnyAndFallMusic);
             setTimeout(createParticles, 1000);
             if (airplaneIntervalId === null) {
                 setTimeout(spawnAirplane, Math.random() * 5000 + 2000);
@@ -247,7 +250,7 @@ function applyTheme(themeName) {
         case 'night':
             document.body.classList.add('night-weather');
             createStars();
-            audioSystem.playNightMusic();
+            playAudio(audioSystem.nightMusic);
             setTimeout(createParticles, 1000);
             if (airplaneIntervalId === null) {
                 setTimeout(spawnAirplane, Math.random() * 15000 + 5000);
@@ -257,13 +260,13 @@ function applyTheme(themeName) {
         case 'snowy':
             document.body.classList.add('snowy-weather');
             createSnow();
-            audioSystem.playSnowMusic();
+            playAudio(audioSystem.snowMusic);
             createRainyClouds();
             break;
         case 'normal':
         default:
             createLeaves();
-            audioSystem.playSunnyAndFallMusic();
+            playAudio(audioSystem.sunnyAndFallMusic);
             setTimeout(createParticles, 1000);
             if (airplaneIntervalId === null) {
                 setTimeout(spawnAirplane, Math.random() * 5000 + 2000);
@@ -610,9 +613,10 @@ function showMainMenu() {
     const mainNav = document.getElementById('mainNav');
     const backBtn = document.getElementById('main-back-btn');
     
-    closePlayerUI(activePlayer.left);
-    closePlayerUI(activePlayer.right);
-    activePlayer = { left: null, right: null };
+    if(activePlayer) {
+        closePlayerUI(activePlayer);
+        activePlayer = null;
+    }
     
     hideMascot();
 
@@ -621,6 +625,9 @@ function showMainMenu() {
             persistentAudioPlayer.audio.play().catch(e => console.error("Gagal melanjutkan musik latar:", e));
         }
         backgroundMusicPausedForPlayer = false;
+    }
+    if (activeThemeAudio && activeThemeAudio.paused) {
+        activeThemeAudio.play().catch(e => console.error("Gagal melanjutkan audio tema:", e));
     }
     
     document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
@@ -714,58 +721,52 @@ function fetchAndRender(url, container, template) {
 function playMusic(btnElement, type, id) {
     audioSystem.playClick();
     const thisMusicItem = btnElement.closest('.music-item');
-    const column = btnElement.closest('.music-column');
-    const columnKey = column.id === 'musicListLeft' ? 'left' : 'right';
 
-    if (thisMusicItem.classList.contains('playing')) {
+    const isCurrentlyPlaying = thisMusicItem.classList.contains('playing');
+
+    if (activePlayer && activePlayer !== thisMusicItem) {
+        closePlayerUI(activePlayer);
+    }
+
+    if (isCurrentlyPlaying) {
         closePlayerUI(thisMusicItem);
-        activePlayer[columnKey] = null;
-        if (!activePlayer.left && !activePlayer.right) {
-            if (backgroundMusicPausedForPlayer) {
-                if (persistentAudioPlayer.audio) {
-                    persistentAudioPlayer.audio.play().catch(e => console.error("Gagal melanjutkan musik latar:", e));
-                }
-                backgroundMusicPausedForPlayer = false;
-            }
+        activePlayer = null;
+        if (backgroundMusicPausedForPlayer) {
+            persistentAudioPlayer.audio?.play().catch(e => console.error("Gagal melanjutkan musik latar:", e));
+            backgroundMusicPausedForPlayer = false;
         }
-        return;
-    }
-    
-    if (activePlayer[columnKey]) {
-        closePlayerUI(activePlayer[columnKey]);
-    }
-    
-    if (persistentAudioPlayer.audio && !persistentAudioPlayer.audio.paused) {
-        persistentAudioPlayer.audio.pause();
-        backgroundMusicPausedForPlayer = true;
+        if (activeThemeAudio && activeThemeAudio.paused) {
+            activeThemeAudio.play().catch(e => console.error("Gagal melanjutkan audio tema:", e));
+        }
     } else {
-        backgroundMusicPausedForPlayer = false;
-    }
+        if (persistentAudioPlayer.audio && !persistentAudioPlayer.audio.paused) {
+            persistentAudioPlayer.audio.pause();
+            backgroundMusicPausedForPlayer = true;
+        }
+        if (activeThemeAudio) {
+            activeThemeAudio.pause();
+        }
 
-    audioSystem.stopRainSound();
-    audioSystem.stopSunnyAndFallMusic();
-    audioSystem.stopSnowMusic();
-    audioSystem.stopNightMusic();
-    
-    const playerContainer = thisMusicItem.querySelector('.player-container');
-    thisMusicItem.classList.add('playing');
-    btnElement.classList.add('playing');
-    btnElement.innerHTML = '■ Stop';
-    activePlayer[columnKey] = thisMusicItem;
-    
-    let embedHtml = '';
-    switch (type) {
-        case 'mp3':
-            embedHtml = `<audio controls autoplay src="${id}"></audio>`;
-            break;
-        case 'youtube':
-            embedHtml = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-            break;
-        case 'spotify':
-            embedHtml = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
-            break;
+        const playerContainer = thisMusicItem.querySelector('.player-container');
+        thisMusicItem.classList.add('playing');
+        btnElement.classList.add('playing');
+        btnElement.innerHTML = '■ Stop';
+        activePlayer = thisMusicItem;
+        
+        let embedHtml = '';
+        switch (type) {
+            case 'mp3':
+                embedHtml = `<audio controls autoplay src="${id}"></audio>`;
+                break;
+            case 'youtube':
+                embedHtml = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                break;
+            case 'spotify':
+                embedHtml = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+                break;
+        }
+        playerContainer.innerHTML = embedHtml;
     }
-    playerContainer.innerHTML = embedHtml;
 }
 
 function openImageModal(src) {
