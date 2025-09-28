@@ -564,7 +564,7 @@ function hideMascot() {
     }, { once: true });
 }
 
-function closePlayer(playerItem) {
+function closePlayerUI(playerItem) {
     if (!playerItem) return;
     const playerContainer = playerItem.querySelector('.player-container');
     const playBtn = playerItem.querySelector('.play-btn');
@@ -580,33 +580,30 @@ function closePlayer(playerItem) {
             playerContainer.innerHTML = '';
         }, { once: true });
     }
-    
-    if (!document.querySelector('.music-item.playing')) {
-        hideMascot();
-        if (backgroundMusicPausedForPlayer) {
-            if (persistentAudioPlayer.audio) {
-                persistentAudioPlayer.audio.play().catch(e => console.error("Gagal melanjutkan musik latar:", e));
-            }
-            backgroundMusicPausedForPlayer = false;
-        }
-    }
 }
 
 function showMainMenu() {
     audioSystem.playClick();
     const mainNav = document.getElementById('mainNav');
     const backBtn = document.getElementById('main-back-btn');
-
-    closePlayer(activePlayer.left);
-    closePlayer(activePlayer.right);
+    
+    closePlayerUI(activePlayer.left);
+    closePlayerUI(activePlayer.right);
     activePlayer = { left: null, right: null };
+    
+    hideMascot();
 
+    if (backgroundMusicPausedForPlayer) {
+        if (persistentAudioPlayer.audio) {
+            persistentAudioPlayer.audio.play().catch(e => console.error("Gagal melanjutkan musik latar:", e));
+        }
+        backgroundMusicPausedForPlayer = false;
+    }
+    
     document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
     
     if (mainNav) mainNav.style.display = 'flex';
     if (backBtn) backBtn.style.display = 'none'; 
-    
-    hideMascot();
 }
 
 function loadPageContent(pageName) {
@@ -697,18 +694,26 @@ function playMusic(btnElement, type, id) {
     const column = btnElement.closest('.music-column');
     const columnKey = column.id === 'musicListLeft' ? 'left' : 'right';
 
-    const currentlyPlayingItem = activePlayer[columnKey];
-
-    if (currentlyPlayingItem && currentlyPlayingItem !== thisMusicItem) {
-        closePlayer(currentlyPlayingItem);
-    }
-    
     if (thisMusicItem.classList.contains('playing')) {
-        closePlayer(thisMusicItem);
+        closePlayerUI(thisMusicItem);
         activePlayer[columnKey] = null;
+        if (!activePlayer.left && !activePlayer.right) {
+            hideMascot();
+            if (backgroundMusicPausedForPlayer) {
+                if (persistentAudioPlayer.audio) {
+                    persistentAudioPlayer.audio.play().catch(e => console.error("Gagal melanjutkan musik latar:", e));
+                }
+                backgroundMusicPausedForPlayer = false;
+            }
+        }
         return;
     }
 
+    const currentlyPlayingItem = activePlayer[columnKey];
+    if (currentlyPlayingItem) {
+        closePlayerUI(currentlyPlayingItem);
+    }
+    
     if (persistentAudioPlayer.audio && !persistentAudioPlayer.audio.paused) {
         persistentAudioPlayer.audio.pause();
         backgroundMusicPausedForPlayer = true;
@@ -717,9 +722,8 @@ function playMusic(btnElement, type, id) {
     }
 
     audioSystem.stopRainSound();
-    
     showMascot();
-
+    
     const playerContainer = thisMusicItem.querySelector('.player-container');
     thisMusicItem.classList.add('playing');
     btnElement.classList.add('playing');
