@@ -121,6 +121,7 @@ let isTyping = false;
 let typingTimeout = null;
 let airplaneIntervalId = null;
 let activePlayer = { left: null, right: null };
+let currentMascotElement = null;
 
 const audioSystem = {
     clickSound: null, pixelWipeSound: null, loadingMusic: null, introMusic: null, rainSound: null,
@@ -258,44 +259,6 @@ function initializeAmbientEffects() {
     const initialTheme = THEMES[currentThemeIndex];
     applyTheme(initialTheme);
     document.body.dataset.effectsInitialized = 'true';
-}
-
-function skipIntro() {
-    const introContainer = document.getElementById('introContainer');
-    const mainApp = document.getElementById('main-app');
-    const mouth = document.querySelector('.mouth');
-    if (!introContainer || !mainApp || introContainer.style.opacity === '0') return;
-
-    if (isTyping && typingTimeout) { clearTimeout(typingTimeout); isTyping = false; }
-    if (mouth) mouth.classList.remove('talking');
-
-    introContainer.style.opacity = '0';
-
-    setTimeout(() => {
-        introContainer.style.display = 'none';
-
-        triggerBlurTransition(
-            () => {
-                audioSystem.stopIntroMusic();
-
-                const introVideo = document.getElementById('intro-video-bg');
-                const pixelArt = document.querySelector('.pixel-art-elements');
-
-                if (introVideo) introVideo.style.display = 'none';
-                document.body.classList.remove('intro-page');
-                if (pixelArt) pixelArt.style.display = 'block';
-                
-                mainApp.style.display = 'block';
-
-                initializeAmbientEffects();
-                showMainMenu();
-                persistentAudioPlayer.initializeOnLoad();
-            },
-            () => {
-                mainApp.style.opacity = '1';
-            }
-        );
-    }, 500);
 }
 
 function startLoading() {
@@ -565,6 +528,42 @@ function showPage(pageName) {
     }
 }
 
+function showMascot() {
+    if (currentMascotElement) return;
+
+    const mascot = document.createElement('img');
+    mascot.src = 'assets/images/miku.gif';
+    mascot.className = 'music-mascot';
+
+    const mainAppContainer = document.getElementById('main-app');
+    (mainAppContainer || document.body).appendChild(mascot);
+
+    const direction = Math.random() > 0.5 ? 'left' : 'right';
+    mascot.classList.add(direction === 'left' ? 'enter-from-left' : 'enter-from-right');
+    
+    mascot.addEventListener('animationend', function handler(e) {
+        if (e.animationName === 'slideAndFadeIn') {
+            mascot.classList.add('is-floating');
+            mascot.removeEventListener('animationend', handler);
+        }
+    });
+    currentMascotElement = mascot;
+}
+
+function hideMascot() {
+    if (!currentMascotElement) return;
+
+    currentMascotElement.classList.remove('is-floating');
+    currentMascotElement.classList.add('is-exiting');
+
+    currentMascotElement.addEventListener('animationend', function handler(e) {
+        if (e.animationName === 'shrinkAndFadeOut') {
+           if (currentMascotElement) currentMascotElement.remove();
+           currentMascotElement = null;
+        }
+    }, { once: true });
+}
+
 function closePlayer(playerItem) {
     if (!playerItem) return;
     const playerContainer = playerItem.querySelector('.player-container');
@@ -581,12 +580,15 @@ function closePlayer(playerItem) {
             playerContainer.innerHTML = '';
         }, { once: true });
     }
-
-    if (backgroundMusicPausedForPlayer) {
-        if (persistentAudioPlayer.audio) {
-            persistentAudioPlayer.audio.play().catch(e => console.error("Gagal melanjutkan musik latar:", e));
+    
+    if (!document.querySelector('.music-item.playing')) {
+        hideMascot();
+        if (backgroundMusicPausedForPlayer) {
+            if (persistentAudioPlayer.audio) {
+                persistentAudioPlayer.audio.play().catch(e => console.error("Gagal melanjutkan musik latar:", e));
+            }
+            backgroundMusicPausedForPlayer = false;
         }
-        backgroundMusicPausedForPlayer = false;
     }
 }
 
@@ -603,6 +605,8 @@ function showMainMenu() {
     
     if (mainNav) mainNav.style.display = 'flex';
     if (backBtn) backBtn.style.display = 'none'; 
+    
+    hideMascot();
 }
 
 function loadPageContent(pageName) {
@@ -714,6 +718,8 @@ function playMusic(btnElement, type, id) {
 
     audioSystem.stopRainSound();
     
+    showMascot();
+
     const playerContainer = thisMusicItem.querySelector('.player-container');
     thisMusicItem.classList.add('playing');
     btnElement.classList.add('playing');

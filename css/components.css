@@ -19,7 +19,6 @@
 .music-artist { color: #666; font-size: 10px; }
 .play-btn { padding: 8px 16px; background: #90EE90; border: 2px solid #333; border-radius: 8px; font-family: 'Press Start 2P', cursive; font-size: 8px; cursor: var(--nes-cursor-pointer), auto; transition: all 0.3s ease; margin-left: 20px; }
 .play-btn.playing { background: #FF6B6B; }
-.play-btn:hover { transform: scale(1.1); }
 .player-container { width: 100%; margin-top: 5px; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
 .music-item.playing .player-container { max-height: 500px; }
 .player-container iframe, .player-container audio { width: 100%; border-radius: 8px; border: none; }
@@ -45,3 +44,34 @@
 .close-modal-btn:hover, .close-modal-btn:focus { color: #bbb; text-decoration: none; }
 @keyframes fadeInModal { from { background-color: rgba(0,0,0,0); } to { background-color: rgba(0,0,0,0.85); } }
 @keyframes zoomInModal { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.music-mascot {
+    position: fixed;
+    bottom: 20px;
+    width: 180px;
+    height: auto;
+    z-index: 99;
+    pointer-events: none;
+    image-rendering: pixelated;
+    filter: drop-shadow(3px 3px 0 rgba(0,0,0,0.2));
+    opacity: 0;
+    transform: translateY(50px);
+}
+.music-mascot.enter-from-left { left: 20px; animation: slideAndFadeIn 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+.music-mascot.enter-from-right { right: 20px; animation: slideAndFadeIn 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+.music-mascot.is-floating { animation: floatAround 12s ease-in-out infinite; }
+.music-mascot.is-exiting { animation: shrinkAndFadeOut 0.7s ease-in forwards; }
+
+@keyframes slideAndFadeIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes floatAround {
+    0% { transform: translate(0, 0) rotate(-3deg); }
+    25% { transform: translate(20px, -15px) rotate(0deg); }
+    50% { transform: translate(0px, 5px) rotate(3deg); }
+    75% { transform: translate(-20px, -15px) rotate(0deg); }
+    100% { transform: translate(0, 0) rotate(-3deg); }
+}
+@keyframes shrinkAndFadeOut {
+    to { transform: scale(0) translateY(50px); opacity: 0; }
+}
