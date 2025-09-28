@@ -1,0 +1,85 @@
+.pixel-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1500;
+    display: flex;
+    pointer-events: none;
+    overflow: hidden;
+}
+.pixel-bar {
+    width: 5%;
+    height: 100%;
+    background-color: rgb(40, 43, 53);
+    transform-origin: bottom;
+    transform: scaleY(0);
+}
+.pixel-transition.animate-in .pixel-bar { animation: pixel-grow 0.4s ease-in-out forwards; }
+.pixel-transition.animate-out .pixel-bar { transform-origin: top; animation: pixel-shrink 0.4s ease-in-out forwards; }
+@keyframes pixel-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes pixel-shrink { from { transform: scaleY(1); } to { transform: scaleY(0); } }
+
+#main-app {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.main-nav {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 100;
+}
+.nav-btn {
+    padding: 15px 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 3px solid #333;
+    border-radius: 12px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 12px;
+    cursor: var(--nes-cursor-pointer), auto;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #333;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+.nav-btn:hover { background: #87CEEB; color: white; transform: translateY(-3px); box-shadow: 0 6px 20px rgba(135, 206, 235, 0.4); }
+
+.page-content {
+    display: none;
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 100vh;
+}
+.page-content.active { display: block; animation: fade-in 0.8s ease-out; }
+@keyframes fade-in { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+.page-header { text-align: center; margin-bottom: 40px; color: #333; text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8); }
+
+.back-btn {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #333;
+    border-radius: 8px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    cursor: var(--nes-cursor-pointer), auto;
+    z-index: 200;
+    transition: all 0.3s ease;
+}
+.back-btn:hover { background: #FFB6C1; transform: translateY(-2px); }
+
+.top-right-controls { position: fixed; top: 20px; right: 20px; z-index: 200; }
+#music-toggle-btn { font-size: 14px; padding: 5px 10px; }

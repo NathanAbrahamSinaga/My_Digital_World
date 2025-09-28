@@ -1,0 +1,52 @@
+/* Blog Page */
+.blog-posts { display: grid; gap: 30px; }
+.blog-post { background: rgba(255, 255, 255, 0.9); border: 3px solid #333; border-radius: 12px; padding: 25px; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1); animation: slide-in 0.6s ease-out forwards; }
+@keyframes slide-in { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+.blog-post h3 { color: #4A90E2; margin-bottom: 15px; font-size: 14px; }
+.blog-post-content { line-height: 1.6; color: #555; font-size: 11px; }
+.blog-post-content p { margin-bottom: 1em; }
+.blog-post-content p:last-of-type { margin-bottom: 0; }
+.blog-post-content b, .blog-post-content strong { color: #212529; font-weight: bold; }
+.blog-post-content i, .blog-post-content em { color: #4A90E2; font-style: italic; }
+.blog-date { margin-top: 15px; color: #888; font-size: 9px; }
+
+/* Music Page */
+.music-container { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.music-column { display: flex; flex-direction: column; gap: 30px; }
+.music-item { background: rgba(255, 255, 255, 0.9); border: 3px solid #333; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 15px; transition: all 0.3s ease; animation: slide-in 0.6s ease-out forwards; opacity: 0; }
+.music-item-header { display: flex; align-items: center; width: 100%; }
+.music-item:hover { transform: scale(1.05); box-shadow: 0 12px 40px rgba(74, 144, 226, 0.4); }
+.music-info { flex: 1; }
+.music-title { color: #4A90E2; font-size: 12px; margin-bottom: 8px; }
+.music-artist { color: #666; font-size: 10px; }
+.play-btn { padding: 8px 16px; background: #90EE90; border: 2px solid #333; border-radius: 8px; font-family: 'Press Start 2P', cursive; font-size: 8px; cursor: var(--nes-cursor-pointer), auto; transition: all 0.3s ease; margin-left: 20px; }
+.play-btn.playing { background: #FF6B6B; }
+.play-btn:hover { transform: scale(1.1); }
+.player-container { width: 100%; margin-top: 5px; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
+.music-item.playing .player-container { max-height: 500px; }
+.player-container iframe, .player-container audio { width: 100%; border-radius: 8px; border: none; }
+.player-container iframe { aspect-ratio: 16 / 9; height: auto; min-height: 180px; }
+
+/* Art Page */
+.gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
+.gallery-item { background: rgba(255, 255, 255, 0.9); border: 3px solid #333; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; cursor: var(--nes-cursor-pointer), pointer; }
+.gallery-item:hover { transform: scale(1.05); box-shadow: 0 12px 40px rgba(144, 238, 144, 0.4); }
+.gallery-img { width: 100%; height: 200px; background: #212529; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 10px; text-align: center; line-height: 1.6; border-bottom: 3px solid #333; padding: 10px; }
+.gallery-info { padding: 20px; }
+.gallery-title { color: #4A90E2; font-size: 12px; margin-bottom: 10px; }
+.gallery-desc { color: #666; font-size: 10px; line-height: 1.5; }
+
+/* About Page */
+.about-content { background: rgba(255, 255, 255, 0.9); border: 3px solid #333; border-radius: 12px; padding: 40px; text-align: center; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
+.about-content h2 { color: #4A90E2; margin-bottom: 30px; font-size: 16px; }
+.about-content p { color: #555; font-size: 11px; line-height: 1.8; margin-bottom: 20px; }
+.quote { font-style: italic; color: #90EE90; font-size: 12px; border-left: 4px solid #90EE90; padding-left: 20px; margin: 30px auto; display: inline-block; text-align: left; }
+
+/* Image Modal */
+.image-modal { display: none; position: fixed; z-index: 1600; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.85); justify-content: center; align-items: center; }
+.image-modal.show { display: flex; animation: fadeInModal 0.3s ease-in-out; }
+.modal-content { margin: auto; display: block; max-width: 90vw; max-height: 90vh; animation: zoomInModal 0.4s ease-out; image-rendering: auto; }
+.close-modal-btn { position: absolute; top: 20px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; transition: 0.3s; cursor: var(--nes-cursor-pointer), pointer; font-family: sans-serif; }
+.close-modal-btn:hover, .close-modal-btn:focus { color: #bbb; text-decoration: none; }
+@keyframes fadeInModal { from { background-color: rgba(0,0,0,0); } to { background-color: rgba(0,0,0,0.85); } }
+@keyframes zoomInModal { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }

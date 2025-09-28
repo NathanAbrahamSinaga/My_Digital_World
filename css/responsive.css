@@ -1,0 +1,60 @@
+@media (max-width: 768px) {
+    #dialogBox {
+        width: 95%;
+    }
+    
+    .dialog-text {
+        font-size: 12px;
+    }
+    
+    .nav-btn {
+        padding: 12px 24px;
+        font-size: 10px;
+    }
+    
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .music-container {
+        grid-template-columns: 1fr;
+    }
+
+    #pixel-gif-3 {
+        top: 10%;
+        left: 2%;
+        right: auto;
+        width: 40vw;
+        max-width: 120px;
+    }
+
+    #pixel-gif-4 {
+        top: 8%;
+        right: 2%;
+        left: auto;
+        width: 35vw;
+        max-width: 130px;
+    }
+
+    #pixel-gif-1 {
+        top: auto;
+        bottom: 5%;
+        left: 2%;
+        width: 45vw;
+        max-width: 140px;
+    }
+    
+    #pixel-gif-2 {
+       display: block;
+       top: auto;
+       bottom: 5%;
+       right: 2%;
+       left: auto;
+       width: 40vw;
+       max-width: 120px;
+    }
+    
+    #pixel-gif-5, #pixel-gif-6 {
+        display: none;
+    }
+}
