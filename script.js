@@ -125,6 +125,7 @@ let currentMascotElement = null;
 
 const audioSystem = {
     clickSound: null, pixelWipeSound: null, loadingMusic: null, introMusic: null, rainSound: null,
+    sunnyAndFallMusic: null, snowMusic: null, nightMusic: null,
     init() {
         const basePath = '';
         this.loadingMusic = new Audio(`${basePath}assets/music/train.wav`);
@@ -133,6 +134,12 @@ const audioSystem = {
         this.introMusic.loop = true;
         this.rainSound = new Audio(`${basePath}assets/music/rain.mp3`);
         this.rainSound.loop = true;
+        this.sunnyAndFallMusic = new Audio(`${basePath}assets/music/sunnyAndFall.mp3`);
+        this.sunnyAndFallMusic.loop = true;
+        this.snowMusic = new Audio(`${basePath}assets/music/snow.mp3`);
+        this.snowMusic.loop = true;
+        this.nightMusic = new Audio(`${basePath}assets/music/night.mp3`);
+        this.nightMusic.loop = true;
         this.clickSound = { play() { const ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); const o = ctx.createOscillator(), g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.setValueAtTime(800, ctx.currentTime); g.gain.setValueAtTime(0.1, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.1); } };
         this.pixelWipeSound = { play() { const ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); const gain = ctx.createGain(); gain.connect(ctx.destination); gain.gain.setValueAtTime(0.4, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6); const noise = ctx.createBufferSource(); const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.6, ctx.sampleRate); const data = buffer.getChannelData(0); for (let i = 0; i < data.length; i++) { data[i] = Math.random() * 2 - 1; } noise.buffer = buffer; const bandpass = ctx.createBiquadFilter(); bandpass.type = "bandpass"; bandpass.frequency.setValueAtTime(200, ctx.currentTime); bandpass.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.4); bandpass.Q.value = 10; noise.connect(bandpass); bandpass.connect(gain); noise.start(ctx.currentTime); noise.stop(ctx.currentTime + 0.6); } };
     },
@@ -141,6 +148,12 @@ const audioSystem = {
     stopIntroMusic() { if (this.introMusic) { this.introMusic.pause(); this.introMusic.currentTime = 0; } },
     playRainSound() { if(this.rainSound) { this.rainSound.volume = 0.4; this.rainSound.play().catch(e => console.error("Gagal memutar audio hujan:", e)); } },
     stopRainSound() { if(this.rainSound) { this.rainSound.pause(); this.rainSound.currentTime = 0; } },
+    playSunnyAndFallMusic() { if(this.sunnyAndFallMusic) { this.sunnyAndFallMusic.volume = 0.4; this.sunnyAndFallMusic.play().catch(e => console.error("Gagal memutar audio:", e)); } },
+    stopSunnyAndFallMusic() { if(this.sunnyAndFallMusic) { this.sunnyAndFallMusic.pause(); this.sunnyAndFallMusic.currentTime = 0; } },
+    playSnowMusic() { if(this.snowMusic) { this.snowMusic.volume = 0.4; this.snowMusic.play().catch(e => console.error("Gagal memutar audio:", e)); } },
+    stopSnowMusic() { if(this.snowMusic) { this.snowMusic.pause(); this.snowMusic.currentTime = 0; } },
+    playNightMusic() { if(this.nightMusic) { this.nightMusic.volume = 0.4; this.nightMusic.play().catch(e => console.error("Gagal memutar audio:", e)); } },
+    stopNightMusic() { if(this.nightMusic) { this.nightMusic.pause(); this.nightMusic.currentTime = 0; } },
     playClick() { if (this.clickSound) this.clickSound.play(); },
     playPixelWipe() { if (this.pixelWipeSound) this.pixelWipeSound.play(); }
 };
@@ -195,6 +208,9 @@ function cleanupAmbientEffects() {
         }
     });
     audioSystem.stopRainSound();
+    audioSystem.stopSunnyAndFallMusic();
+    audioSystem.stopSnowMusic();
+    audioSystem.stopNightMusic();
     const leafContainer = document.querySelector('.leaf-container');
     if (leafContainer) leafContainer.remove();
     const rainContainer = document.getElementById('rain-container');
@@ -221,6 +237,7 @@ function applyTheme(themeName) {
         case 'autumn':
             document.body.classList.add('autumn-weather');
             createLeaves();
+            audioSystem.playSunnyAndFallMusic();
             setTimeout(createParticles, 1000);
             if (airplaneIntervalId === null) {
                 setTimeout(spawnAirplane, Math.random() * 5000 + 2000);
@@ -230,6 +247,7 @@ function applyTheme(themeName) {
         case 'night':
             document.body.classList.add('night-weather');
             createStars();
+            audioSystem.playNightMusic();
             setTimeout(createParticles, 1000);
             if (airplaneIntervalId === null) {
                 setTimeout(spawnAirplane, Math.random() * 15000 + 5000);
@@ -239,11 +257,13 @@ function applyTheme(themeName) {
         case 'snowy':
             document.body.classList.add('snowy-weather');
             createSnow();
+            audioSystem.playSnowMusic();
             createRainyClouds();
             break;
         case 'normal':
         default:
             createLeaves();
+            audioSystem.playSunnyAndFallMusic();
             setTimeout(createParticles, 1000);
             if (airplaneIntervalId === null) {
                 setTimeout(spawnAirplane, Math.random() * 5000 + 2000);
@@ -521,6 +541,9 @@ function showPage(pageName) {
     const targetPage = document.getElementById(pageName + 'Page');
     if (targetPage) {
         targetPage.classList.add('active');
+        if (pageName === 'music') {
+            showMascot();
+        }
         if (!targetPage.dataset.loaded) {
             loadPageContent(pageName);
             targetPage.dataset.loaded = 'true';
@@ -698,7 +721,6 @@ function playMusic(btnElement, type, id) {
         closePlayerUI(thisMusicItem);
         activePlayer[columnKey] = null;
         if (!activePlayer.left && !activePlayer.right) {
-            hideMascot();
             if (backgroundMusicPausedForPlayer) {
                 if (persistentAudioPlayer.audio) {
                     persistentAudioPlayer.audio.play().catch(e => console.error("Gagal melanjutkan musik latar:", e));
@@ -721,7 +743,9 @@ function playMusic(btnElement, type, id) {
     }
 
     audioSystem.stopRainSound();
-    showMascot();
+    audioSystem.stopSunnyAndFallMusic();
+    audioSystem.stopSnowMusic();
+    audioSystem.stopNightMusic();
     
     const playerContainer = thisMusicItem.querySelector('.player-container');
     thisMusicItem.classList.add('playing');
