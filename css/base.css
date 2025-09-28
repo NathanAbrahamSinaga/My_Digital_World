@@ -12,6 +12,13 @@ body {
     cursor: var(--nes-cursor-default), auto;
 }
 
+.nav-btn:hover { background: #87CEEB; color: white; transform: translateY(-3px); box-shadow: 0 6px 20px rgba(135, 206, 235, 0.4); }
+.back-btn:hover { background: #FFB6C1; transform: translateY(-2px); }
+.play-btn:hover { transform: scale(1.1); background: #b0e0e6; }
+.nes-btn:hover:not(.is-disabled) { background-color: #e0e0e0; }
+.nes-btn.is-primary:hover:not(.is-disabled) { background-color: #4a9ff5; }
+.nes-btn.is-warning:hover:not(.is-disabled) { background-color: #f7d51d; }
+
 body.intro-page {
     background-color: rgb(12, 15, 26);
     overflow-y: hidden;
@@ -20,15 +27,43 @@ body.intro-page {
 body.rainy-weather {
     background: linear-gradient(135deg, #6c7a89 0%, #7f8c9a 50%, #95a5a6 100%);
 }
+body.rainy-weather .nav-btn:hover,
+body.rainy-weather .back-btn:hover { background-color: #a9b4b5; color: #333; }
+body.rainy-weather .play-btn:hover { background-color: #a9b4b5; }
+body.rainy-weather .nav-btn:hover { box-shadow: 0 6px 20px rgba(169, 180, 181, 0.4); }
+body.rainy-weather .nes-btn:hover:not(.is-disabled) { background-color: #b0bec5; }
+body.rainy-weather .nes-btn.is-primary:hover:not(.is-disabled) { background-color: #7f8c9a; }
+body.rainy-weather .nes-btn.is-warning:hover:not(.is-disabled) { background-color: #95a5a6; }
 
 body.autumn-weather {
     background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 50%, #ffa726 100%);
 }
+body.autumn-weather .nav-btn:hover,
+body.autumn-weather .back-btn:hover { background-color: #ffb74d; color: #333; }
+body.autumn-weather .play-btn:hover { background-color: #ffb74d; }
+body.autumn-weather .nav-btn:hover { box-shadow: 0 6px 20px rgba(255, 183, 77, 0.4); }
+body.autumn-weather .nes-btn:hover:not(.is-disabled) { background-color: #ffca7a; }
+body.autumn-weather .nes-btn.is-primary:hover:not(.is-disabled) { background-color: #ffa726; }
+body.autumn-weather .nes-btn.is-warning:hover:not(.is-disabled) { background-color: #ffd182; }
 
 body.night-weather {
     background: linear-gradient(135deg, #020111 0%, #191621 50%, #3a3a52 100%);
 }
+body.night-weather .nav-btn:hover,
+body.night-weather .back-btn:hover { background-color: #5c5c8a; color: #f0f0f0; }
+body.night-weather .play-btn:hover { background-color: #5c5c8a; }
+body.night-weather .nav-btn:hover { box-shadow: 0 6px 20px rgba(92, 92, 138, 0.4); }
+body.night-weather .nes-btn:hover:not(.is-disabled) { background-color: #4a4a6a; }
+body.night-weather .nes-btn.is-primary:hover:not(.is-disabled) { background-color: #3a3a52; }
+body.night-weather .nes-btn.is-warning:hover:not(.is-disabled) { background-color: #8a8a5c; }
 
 body.snowy-weather {
     background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 50%, #f6f7f9 100%);
 }
+body.snowy-weather .nav-btn:hover,
+body.snowy-weather .back-btn:hover { background-color: #c4d0e0; color: #333; }
+body.snowy-weather .play-btn:hover { background-color: #c4d0e0; }
+body.snowy-weather .nav-btn:hover { box-shadow: 0 6px 20px rgba(196, 208, 224, 0.4); }
+body.snowy-weather .nes-btn:hover:not(.is-disabled) { background-color: #d8dde4; }
+body.snowy-weather .nes-btn.is-primary:hover:not(.is-disabled) { background-color: #b0c4de; }
+body.snowy-weather .nes-btn.is-warning:hover:not(.is-disabled) { background-color: #e0e6c4; }
