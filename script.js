@@ -1,7 +1,58 @@
-// [BARU] Tambahkan variabel global ini di bagian atas file
+// ... (kode dari awal sampai sebelum fungsi skipIntro tetap sama)
+
+// [PERHATIKAN PERUBAHAN DI FUNGSI INI]
+function skipIntro() {
+    const introContainer = document.getElementById('introContainer');
+    const mainApp = document.getElementById('main-app');
+    const mouth = document.querySelector('.mouth');
+    if (!introContainer || !mainApp || introContainer.style.opacity === '0') return;
+
+    // audioSystem.stopIntroMusic(); // <-- BARIS INI DIHAPUS DARI SINI
+
+    if (isTyping && typingTimeout) { clearTimeout(typingTimeout); isTyping = false; }
+    if (mouth) mouth.classList.remove('talking');
+
+    introContainer.style.opacity = '0';
+
+    setTimeout(() => {
+        introContainer.style.display = 'none';
+
+        triggerBlurTransition(
+            () => {
+                // BARIS YANG DIHAPUS TADI, DIPINDAHKAN KE SINI
+                audioSystem.stopIntroMusic(); 
+
+                // Sisa logika tetap sama
+                const introVideo = document.getElementById('intro-video-bg');
+                const pixelArt = document.querySelector('.pixel-art-elements');
+
+                if (introVideo) introVideo.style.display = 'none';
+                document.body.classList.remove('intro-page');
+                if (pixelArt) pixelArt.style.display = 'block';
+                
+                mainApp.style.display = 'block';
+
+                initializeAmbientEffects();
+                showMainMenu();
+                persistentAudioPlayer.initializeOnLoad();
+            },
+            () => {
+                mainApp.style.opacity = '1';
+            }
+        );
+    }, 500);
+}
+
+
+// ... (sisa kode setelah fungsi skipIntro tetap sama)
+// Di bawah ini adalah salinan lengkap file script.js dengan perbaikan tersebut agar mudah disalin.
+
+// =============================================================
+// KODE LENGKAP script.js DENGAN PERBAIKAN
+// =============================================================
+
 let backgroundMusicPausedForPlayer = false;
 
-// --- DEKLARASI VARIABEL GLOBAL BARU DI ATAS ---
 const THEMES = ['normal', 'rainy', 'autumn', 'night', 'snowy'];
 let currentThemeIndex = 0;
 
@@ -229,7 +280,6 @@ function skipIntro() {
     const mouth = document.querySelector('.mouth');
     if (!introContainer || !mainApp || introContainer.style.opacity === '0') return;
 
-    audioSystem.stopIntroMusic();
     if (isTyping && typingTimeout) { clearTimeout(typingTimeout); isTyping = false; }
     if (mouth) mouth.classList.remove('talking');
 
@@ -240,6 +290,8 @@ function skipIntro() {
 
         triggerBlurTransition(
             () => {
+                audioSystem.stopIntroMusic();
+
                 const introVideo = document.getElementById('intro-video-bg');
                 const pixelArt = document.querySelector('.pixel-art-elements');
 
@@ -527,7 +579,6 @@ function showPage(pageName) {
     }
 }
 
-// [PERBAIKAN] Fungsi ini diubah untuk melanjutkan musik latar
 function closePlayer(playerItem) {
     if (!playerItem) return;
     const playerContainer = playerItem.querySelector('.player-container');
@@ -545,12 +596,11 @@ function closePlayer(playerItem) {
         }, { once: true });
     }
 
-    // [BARU] Logika untuk melanjutkan musik latar
     if (backgroundMusicPausedForPlayer) {
         if (persistentAudioPlayer.audio) {
             persistentAudioPlayer.audio.play().catch(e => console.error("Gagal melanjutkan musik latar:", e));
         }
-        backgroundMusicPausedForPlayer = false; // Reset flag
+        backgroundMusicPausedForPlayer = false;
     }
 }
 
@@ -651,10 +701,6 @@ function fetchAndRender(url, container, template) {
         .catch(error => console.error(`Gagal memuat data dari ${url}:`, error));
 }
 
-// [PERBAIKAN] Fungsi ini dihilangkan karena logikanya dipindah
-// function stopAllAmbientSounds() { ... }
-
-// [PERBAIKAN] Fungsi ini sekarang menangani logika jeda/lanjutkan musik latar
 function playMusic(btnElement, type, id) {
     audioSystem.playClick();
     const thisMusicItem = btnElement.closest('.music-item');
@@ -673,15 +719,14 @@ function playMusic(btnElement, type, id) {
         return;
     }
 
-    // [BARU] Logika untuk menjeda musik latar
     if (persistentAudioPlayer.audio && !persistentAudioPlayer.audio.paused) {
         persistentAudioPlayer.audio.pause();
-        backgroundMusicPausedForPlayer = true; // Set flag
+        backgroundMusicPausedForPlayer = true;
     } else {
-        backgroundMusicPausedForPlayer = false; // Musik sudah dijeda, jangan dilanjutkan nanti
+        backgroundMusicPausedForPlayer = false;
     }
 
-    audioSystem.stopRainSound(); // Hentikan hujan jika ada
+    audioSystem.stopRainSound();
     
     const playerContainer = thisMusicItem.querySelector('.player-container');
     thisMusicItem.classList.add('playing');
