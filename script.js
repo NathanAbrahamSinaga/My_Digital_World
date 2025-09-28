@@ -138,6 +138,8 @@ function typeWriter(element, text, callback) {
     if (isTyping) return;
     isTyping = true;
     element.textContent = '';
+    const mouth = document.querySelector('.mouth');
+    if (mouth) mouth.classList.add('talking');
     let i = 0;
     function type() {
         if (i < text.length) {
@@ -146,6 +148,7 @@ function typeWriter(element, text, callback) {
         } else {
             isTyping = false;
             typingTimeout = null;
+            if (mouth) mouth.classList.remove('talking');
             if (callback) callback();
         }
     }
@@ -158,6 +161,8 @@ function finishTyping(element, fullText) {
         typingTimeout = null;
         element.textContent = fullText;
         isTyping = false;
+        const mouth = document.querySelector('.mouth');
+        if (mouth) mouth.classList.remove('talking');
     }
 }
 
@@ -336,10 +341,12 @@ function triggerPixelTransition(onCovered, onComplete) {
 function skipIntro() {
     const introContainer = document.getElementById('introContainer');
     const mainApp = document.getElementById('main-app');
+    const mouth = document.querySelector('.mouth');
     if (!introContainer || !mainApp || introContainer.style.opacity === '0') return;
 
     audioSystem.stopIntroMusic();
     if (isTyping && typingTimeout) { clearTimeout(typingTimeout); isTyping = false; }
+    if (mouth) mouth.classList.remove('talking');
 
     introContainer.style.opacity = '0';
 
