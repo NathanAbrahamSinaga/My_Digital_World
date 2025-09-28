@@ -1,13 +1,9 @@
-// ... (kode dari awal sampai sebelum fungsi skipIntro tetap sama)
-
-// [PERHATIKAN PERUBAHAN DI FUNGSI INI]
 function skipIntro() {
     const introContainer = document.getElementById('introContainer');
     const mainApp = document.getElementById('main-app');
     const mouth = document.querySelector('.mouth');
     if (!introContainer || !mainApp || introContainer.style.opacity === '0') return;
 
-    // audioSystem.stopIntroMusic(); // <-- BARIS INI DIHAPUS DARI SINI
 
     if (isTyping && typingTimeout) { clearTimeout(typingTimeout); isTyping = false; }
     if (mouth) mouth.classList.remove('talking');
@@ -19,10 +15,8 @@ function skipIntro() {
 
         triggerBlurTransition(
             () => {
-                // BARIS YANG DIHAPUS TADI, DIPINDAHKAN KE SINI
                 audioSystem.stopIntroMusic(); 
 
-                // Sisa logika tetap sama
                 const introVideo = document.getElementById('intro-video-bg');
                 const pixelArt = document.querySelector('.pixel-art-elements');
 
@@ -42,14 +36,6 @@ function skipIntro() {
         );
     }, 500);
 }
-
-
-// ... (sisa kode setelah fungsi skipIntro tetap sama)
-// Di bawah ini adalah salinan lengkap file script.js dengan perbaikan tersebut agar mudah disalin.
-
-// =============================================================
-// KODE LENGKAP script.js DENGAN PERBAIKAN
-// =============================================================
 
 let backgroundMusicPausedForPlayer = false;
 

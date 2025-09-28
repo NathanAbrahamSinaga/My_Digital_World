@@ -1,12 +1,3 @@
-/* ===== GAYA TRANSISI LAMA DIHAPUS ===== */
-/* .pixel-transition { ... } */
-/* .pixel-bar { ... } */
-/* .pixel-transition.animate-in .pixel-bar { ... } */
-/* .pixel-transition.animate-out .pixel-bar { ... } */
-/* @keyframes pixel-grow { ... } */
-/* @keyframes pixel-shrink { ... } */
-
-/* ===== GAYA TRANSISI BLUR BARU DITAMBAHKAN ===== */
 .blur-transition-overlay {
     position: fixed;
     top: 0;
@@ -17,10 +8,10 @@
     pointer-events: none;
     background-color: rgba(28, 28, 40, 0);
     backdrop-filter: blur(0px);
-    -webkit-backdrop-filter: blur(0px); /* Dukungan untuk Safari */
+    -webkit-backdrop-filter: blur(0px);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.6s ease, visibility 0.6s ease; /* Transisi fallback jika animasi gagal */
+    transition: opacity 0.6s ease, visibility 0.6s ease;
 }
 
 .blur-transition-overlay.active {
@@ -64,7 +55,6 @@
 }
 
 
-/* ===== Kode CSS lainnya tetap sama ===== */
 #main-app {
     display: none;
     opacity: 0;
