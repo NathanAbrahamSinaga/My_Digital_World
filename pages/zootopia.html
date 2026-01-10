@@ -1,130 +1,43 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Coming Soon</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zootopia - XTempest</title>
-    <link rel="icon" type="image/x-icon" href="../assets/images/favicon.ico">
-    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="../css/background.css">
-    <link rel="stylesheet" href="../css/layout.css">
-    <link rel="stylesheet" href="../css/components.css">
-    <link rel="stylesheet" href="../css/responsive.css">
-    <link rel="stylesheet" href="../css/zootopia.css">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-image: url('https://images.squarespace-cdn.com/content/v1/54fc8146e4b02a22841f4df7/1711412636789-6QVNIFTH4RU7VF06WGVK/4.jpg?format=2500w');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* Overlay gelap biar teks kebaca */
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 40px 60px;
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 4rem;
+            letter-spacing: 3px;
+            margin: 0;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <div class="bg-container">
-        <div class="city-bg"></div>
-        <div class="clouds"></div>
-        <div class="clouds" style="top: 20%; animation-delay: -10s; animation-duration: 25s;"></div>
-        <div class="clouds" style="top: 5%; animation-delay: -5s; animation-duration: 30s;"></div>
-        <div class="pixel-art-elements">
-            <img src="../assets/images/1.gif" alt="Pixel art animation 1" class="bg-pixel-gif" id="pixel-gif-1">
-            <img src="../assets/images/2.gif" alt="Pixel art animation 2" class="bg-pixel-gif" id="pixel-gif-2">
-            <img src="../assets/images/4.gif" alt="Pixel art animation 3" class="bg-pixel-gif" id="pixel-gif-3">
-            <img src="../assets/images/5.gif" alt="Pixel art animation 4" class="bg-pixel-gif" id="pixel-gif-4">
-        </div>
+    <div class="overlay">
+        <h1>Coming Soon</h1>
     </div>
-
-    <div id="rain-container"></div>
-
-    <div class="top-right-controls">
-        <button id="theme-toggle-btn" class="control-btn" aria-label="Toggle Theme">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37l-1.34-1.34c-.39-.39-1.02-.39-1.41 0L9 11.25 12.75 15l8.96-8.96c.39-.39.39-1.02 0-1.41z"/>
-            </svg>
-        </button>
-        <button id="music-toggle-btn" class="control-btn" aria-label="Toggle Music">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-            </svg>
-        </button>
-    </div>
-
-    <button id="zootopia-back-btn" class="back-btn">← Back to Main</button>
-
-    <div class="zootopia-container">
-        <section class="zootopia-hero">
-            <div class="hero-content">
-                <h1 class="hero-title">Zootopia Universe</h1>
-                <p class="hero-subtitle">Where Anyone Can Be Anything</p>
-            </div>
-            <div class="banner-placeholder">
-                <span>Banner</span>
-            </div>
-        </section>
-
-        <section class="zootopia-logo-section">
-            <div class="logo-placeholder">
-                <span>Logo Zootopia</span>
-            </div>
-        </section>
-
-        <section class="zootopia-section">
-            <h2 class="section-title">🎨 Fan Art Gallery</h2>
-            <div class="fanart-grid">
-                <div class="fanart-card" style="animation-delay: 0s">
-                    <div class="fanart-placeholder">
-                        <span>Fan Art Zootopia</span>
-                    </div>
-                    <div class="fanart-info">
-                        <h3>Art Title 1</h3>
-                        <p>Beautiful artwork description here</p>
-                    </div>
-                </div>
-                <div class="fanart-card" style="animation-delay: 0.1s">
-                    <div class="fanart-placeholder">
-                        <span>Fan Art Zootopia</span>
-                    </div>
-                    <div class="fanart-info">
-                        <h3>Art Title 2</h3>
-                        <p>Amazing creativity showcase</p>
-                    </div>
-                </div>
-                </div>
-        </section>
-
-        <section class="zootopia-section">
-            <h2 class="section-title">🎵 Zootopia Music</h2>
-            <div class="music-showcase">
-                <div class="music-card" style="animation-delay: 0s">
-                    <div class="music-placeholder">
-                        <span>Music</span>
-                    </div>
-                    <div class="music-details">
-                        <h3>Try Everything</h3>
-                        <p>Shakira - Official Soundtrack</p>
-                        <button class="nes-btn is-primary music-play-btn">▶ Play</button>
-                    </div>
-                </div>
-                </div>
-        </section>
-
-        <section class="zootopia-section fanfic-section">
-            <h2 class="section-title">📖 Alternative Universe Stories</h2>
-            <div class="fanfic-grid">
-                <div class="fanfic-card" style="animation-delay: 0s">
-                    <div class="fanfic-header">
-                        <h3>Story Title One</h3>
-                        <span class="fanfic-tag">AU - Romance</span>
-                    </div>
-                    <div class="fanfic-preview">
-                        <div class="fanfic-placeholder">
-                            <span>Fan fict story alternative universe</span>
-                        </div>
-                        <p class="fanfic-excerpt">
-                            An alternative universe where Nick and Judy face new challenges...
-                        </p>
-                    </div>
-                    <button class="nes-btn fanfic-read-btn">Read More →</button>
-                </div>
-                </div>
-        </section>
-    </div>
-
-    <script src="../js/theme-effects.js"></script>
-    <script src="../js/zootopia.js"></script>
 </body>
 </html>
