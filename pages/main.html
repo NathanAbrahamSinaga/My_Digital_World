@@ -7,9 +7,14 @@
     <link rel="icon" type="image/x-icon" href="../assets/images/favicon.ico">
     <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/background.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
 </head>
 <body>
+    <!-- Background -->
     <div class="bg-container">
         <div class="city-bg"></div>
         <div class="clouds"></div>
@@ -24,20 +29,28 @@
     </div>
 
     <div id="rain-container"></div>
+    
+    <div id="blur-transition" class="blur-transition-overlay"></div>
 
+    <!-- Top Controls -->
     <div class="top-right-controls">
+        <button id="theme-toggle-btn" class="nes-btn">🎨</button>
         <button id="music-toggle-btn" class="nes-btn is-warning">🎵</button>
     </div>
 
+    <!-- Back Button -->
     <button id="main-back-btn" class="back-btn" onclick="showMainMenu()">← Back</button>
 
+    <!-- Main Navigation -->
     <div id="mainNav" class="main-nav">
         <button class="nav-btn" onclick="showPage('blog')">📚 Blog</button>
         <button class="nav-btn" onclick="showPage('music')">🎵 Music</button>
         <button class="nav-btn" onclick="showPage('art')">🖼️ Art</button>
         <button class="nav-btn" onclick="showPage('about')">🧩 About Me</button>
+        <button class="nav-btn" onclick="goToZootopia()">🦊 Zootopia</button>
     </div>
 
+    <!-- Page Contents -->
     <div id="blogPage" class="page-content">
         <h1 class="page-header">📚 My Blog</h1>
         <div id="blogPosts" class="blog-posts"></div>
@@ -45,7 +58,10 @@
 
     <div id="musicPage" class="page-content">
         <h1 class="page-header">🎵 Music</h1>
-        <div id="musicList" class="music-list"></div>
+        <div id="musicContainer" class="music-container">
+            <div id="musicListLeft" class="music-column"></div>
+            <div id="musicListRight" class="music-column"></div>
+        </div>
     </div>
 
     <div id="artPage" class="page-content">
@@ -58,6 +74,14 @@
         <div id="aboutContent" class="about-content"></div>
     </div>
 
-    <script src="../script.js"></script>
+    <!-- Image Modal -->
+    <div id="image-modal" class="image-modal">
+        <span id="close-modal-btn" class="close-modal-btn">×</span>
+        <img class="modal-content" id="modal-image">
+    </div>
+
+    <script src="../js/theme-effects.js"></script>
+    <script src="../js/page-navigation.js"></script>
+    <script src="../js/main.js"></script>
 </body>
 </html>

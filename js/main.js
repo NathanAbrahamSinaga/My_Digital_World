@@ -1,0 +1,255 @@
+// main.js - Main application logic
+// Import utilities
+const basePath = '../';
+
+// Audio System
+const audioSystem = {
+    clickSound: null,
+    pixelWipeSound: null,
+    rainSound: null,
+    sunnyAndFallMusic: null,
+    snowMusic: null,
+    nightMusic: null,
+    
+    init() {
+        this.rainSound = new Audio(`${basePath}assets/music/rain.mp3`);
+        this.rainSound.loop = true;
+        this.sunnyAndFallMusic = new Audio(`${basePath}assets/music/sunnyAndFall.mp3`);
+        this.sunnyAndFallMusic.loop = true;
+        this.snowMusic = new Audio(`${basePath}assets/music/snow.mp3`);
+        this.snowMusic.loop = true;
+        this.nightMusic = new Audio(`${basePath}assets/music/night.mp3`);
+        this.nightMusic.loop = true;
+        
+        this.clickSound = {
+            play() {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                if (ctx.state === 'suspended') ctx.resume();
+                const o = ctx.createOscillator(), g = ctx.createGain();
+                o.connect(g);
+                g.connect(ctx.destination);
+                o.frequency.setValueAtTime(800, ctx.currentTime);
+                g.gain.setValueAtTime(0.1, ctx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                o.start(ctx.currentTime);
+                o.stop(ctx.currentTime + 0.1);
+            }
+        };
+        
+        this.pixelWipeSound = {
+            play() {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                if (ctx.state === 'suspended') ctx.resume();
+                const gain = ctx.createGain();
+                gain.connect(ctx.destination);
+                gain.gain.setValueAtTime(0.4, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+                const noise = ctx.createBufferSource();
+                const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.6, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < data.length; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                noise.buffer = buffer;
+                const bandpass = ctx.createBiquadFilter();
+                bandpass.type = "bandpass";
+                bandpass.frequency.setValueAtTime(200, ctx.currentTime);
+                bandpass.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.4);
+                bandpass.Q.value = 10;
+                noise.connect(bandpass);
+                bandpass.connect(gain);
+                noise.start(ctx.currentTime);
+                noise.stop(ctx.currentTime + 0.6);
+            }
+        };
+    },
+    
+    stopAllThemeSounds() {
+        this.rainSound.pause();
+        this.sunnyAndFallMusic.pause();
+        this.snowMusic.pause();
+        this.nightMusic.pause();
+    },
+    
+    playClick() {
+        if (this.clickSound) this.clickSound.play();
+    },
+    
+    playPixelWipe() {
+        if (this.pixelWipeSound) this.pixelWipeSound.play();
+    }
+};
+
+audioSystem.init();
+
+// Persistent Audio Player
+const persistentAudioPlayer = {
+    audio: null,
+    isInitialized: false,
+    startTimesInSeconds: [130, 243, 392, 548],
+
+    updateButtonUI() {
+        const musicBtn = document.getElementById('music-toggle-btn');
+        if (!musicBtn || !this.audio) return;
+        musicBtn.textContent = this.audio.paused ? '🔇' : '🎵';
+    },
+
+    initializeOnLoad() {
+        if (this.isInitialized) return;
+        const startTime = this.getRandomStartTime();
+        this.play(startTime);
+        this.isInitialized = true;
+    },
+
+    getRandomStartTime() {
+        return this.startTimesInSeconds[Math.floor(Math.random() * this.startTimesInSeconds.length)];
+    },
+
+    play(startTime) {
+        if (this.audio) {
+            this.audio.pause();
+            this.audio = null;
+        }
+        this.audio = new Audio(`${basePath}assets/music/bg.mp3`);
+        this.audio.loop = true;
+        this.audio.currentTime = startTime;
+        this.audio.play().catch(error => {
+            console.error("Gagal memutar musik latar:", error);
+            if (error.name === 'NotAllowedError') this.showAudioPrompt();
+        });
+
+        this.audio.addEventListener('timeupdate', () => {
+            if (this.audio) sessionStorage.setItem('musicCurrentTime', this.audio.currentTime);
+        });
+        this.audio.addEventListener('play', () => this.updateButtonUI());
+        this.audio.addEventListener('pause', () => this.updateButtonUI());
+
+        this.updateButtonUI();
+    },
+
+    showAudioPrompt() {
+        if (document.querySelector('.audio-prompt')) return;
+        const prompt = document.createElement('div');
+        prompt.className = 'audio-prompt';
+        prompt.textContent = 'Click anywhere to enable sound.';
+        prompt.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#333; color:#fff; padding:10px; border-radius:5px; z-index:9999;';
+        document.body.appendChild(prompt);
+        
+        const enableAudio = () => {
+            this.audio.play().then(() => prompt.remove()).catch(e => console.error(e));
+            window.removeEventListener('click', enableAudio);
+            window.removeEventListener('touchstart', enableAudio);
+        };
+        window.addEventListener('click', enableAudio, { once: true });
+        window.addEventListener('touchstart', enableAudio, { once: true });
+    }
+};
+
+// Global variables
+let backgroundMusicPausedForPlayer = false;
+let activePlayer = null;
+let currentMascotElement = null;
+let activeThemeAudio = null;
+let airplaneIntervalId = null;
+
+// Import theme and effects handlers
+const THEMES = ['normal', 'rainy', 'autumn', 'night', 'snowy'];
+let currentThemeIndex = 0;
+
+// Initialize on load
+window.addEventListener('load', () => {
+    // Show main menu immediately
+    showMainMenu();
+    
+    // Initialize ambient effects
+    initializeAmbientEffects();
+    
+    // Initialize music
+    persistentAudioPlayer.initializeOnLoad();
+    
+    // Setup event listeners
+    setupEventListeners();
+});
+
+function setupEventListeners() {
+    const musicToggleButton = document.getElementById('music-toggle-btn');
+    const themeToggleButton = document.getElementById('theme-toggle-btn');
+    
+    if (musicToggleButton) {
+        musicToggleButton.addEventListener('click', () => {
+            if (persistentAudioPlayer.audio) {
+                if (persistentAudioPlayer.audio.paused) {
+                    persistentAudioPlayer.audio.play();
+                } else {
+                    persistentAudioPlayer.audio.pause();
+                }
+            }
+        });
+    }
+    
+    if (themeToggleButton) {
+        themeToggleButton.addEventListener('click', () => {
+            audioSystem.playClick();
+            changeTheme();
+        });
+    }
+    
+    // Image modal
+    const modal = document.getElementById('image-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    
+    if (modal && closeModalBtn) {
+        const closeModal = () => modal.classList.remove('show');
+        
+        closeModalBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape" && modal.classList.contains('show')) {
+                closeModal();
+            }
+        });
+    }
+    
+    // Konami code easter egg
+    setupKonamiCode();
+}
+
+function setupKonamiCode() {
+    const konami = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+    let konamiCode = [];
+    
+    document.addEventListener('keydown', (e) => {
+        konamiCode.push(e.keyCode);
+        if (konamiCode.length > konami.length) konamiCode.shift();
+        
+        if (konamiCode.join(',') === konami.join(',')) {
+            const easter = document.createElement('div');
+            easter.style.cssText = `position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(45deg, #FF69B4, #87CEEB); color: white; padding: 30px; border: 4px solid #333; border-radius: 15px; font-family: 'Press Start 2P', cursive; font-size: 14px; text-align: center; z-index: 3000; box-shadow: 0 0 50px rgba(255, 105, 180, 0.5); animation: rainbow 2s infinite;`;
+            
+            const buttonStyle = "margin-top: 20px; padding: 10px; border: none; border-radius: 5px; font-family: 'Press Start 2P', cursive; font-size: 8px; cursor: pointer;";
+            easter.innerHTML = `🌟 KONAMI CODE ACTIVATED! 🌟<br><br>Secret Mode: Neon Dreams!<br><button onclick="this.parentElement.remove()" style="${buttonStyle}">Close</button>`;
+            
+            const rainbowStyle = document.createElement('style');
+            rainbowStyle.textContent = `@keyframes rainbow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }`;
+            document.head.appendChild(rainbowStyle);
+            document.body.appendChild(easter);
+            konamiCode = [];
+        }
+    });
+}
+
+// Navigation functions
+function goToZootopia() {
+    audioSystem.playClick();
+    
+    if (persistentAudioPlayer.audio) {
+        sessionStorage.setItem('musicCurrentTime', persistentAudioPlayer.audio.currentTime);
+    }
+    
+    window.location.href = 'zootopia.html';
+}
+
+// Load remaining functions from separate modules
