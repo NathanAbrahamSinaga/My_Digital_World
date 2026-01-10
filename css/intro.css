@@ -245,3 +245,22 @@ body.intro-page #dialogBox {
 body.intro-page .dialog-text {
     color: #e0e0e0;
 }
+
+.transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000; /* Warna transisi (hitam) */
+    opacity: 0;
+    visibility: hidden;
+    z-index: 9999; /* Paling atas */
+    pointer-events: none;
+    transition: opacity 1s ease-in-out; /* Durasi transisi 1 detik */
+}
+
+.transition-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
