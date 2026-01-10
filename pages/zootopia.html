@@ -12,23 +12,32 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: Arial, Helvetica, sans-serif;
         }
 
-        h1 {
-            color: white;
-            font-size: 4rem;
-            letter-spacing: 2px;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 20px 40px;
+        /* Overlay gelap biar teks kebaca */
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 40px 60px;
             border-radius: 8px;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 4rem;
+            letter-spacing: 3px;
+            margin: 0;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Coming Soon</h1>
+    <div class="overlay">
+        <h1>Coming Soon</h1>
+    </div>
 </body>
 </html>
