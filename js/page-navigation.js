@@ -63,7 +63,8 @@ function showMainMenu() {
 }
 
 function loadPageContent(pageName) {
-    const pathPrefix = '../data/';
+    // UPDATE: Gunakan path absolute
+    const pathPrefix = '/data/';
     
     switch(pageName) {
         case 'blog':
@@ -114,8 +115,8 @@ function loadPageContent(pageName) {
                 if (!art.gambar) return '';
                 const hasInfo = art.judul || art.deskripsi;
                 return `
-                    <div class="gallery-item" style="animation-delay: ${(index * 0.15)}s" onclick="openImageModal('../assets/images/${art.gambar}')">
-                        <div class="gallery-img" style="background-image: url(../assets/images/${art.gambar}); background-size: cover; background-position: center;">
+                    <div class="gallery-item" style="animation-delay: ${(index * 0.15)}s" onclick="openImageModal('/assets/images/${art.gambar}')">
+                        <div class="gallery-img" style="background-image: url(/assets/images/${art.gambar}); background-size: cover; background-position: center;">
                         </div>
                         ${hasInfo ? `
                         <div class="gallery-info">
@@ -232,7 +233,8 @@ function showMascot() {
     if (typeof currentMascotElement !== 'undefined' && currentMascotElement) return;
 
     const mascot = document.createElement('img');
-    const basePath = (window.location.pathname.includes('/pages/')) ? '../' : '';
+    // UPDATE: Gunakan absolute path
+    const basePath = '/';
     mascot.src = `${basePath}assets/images/miku.gif`;
     mascot.className = 'music-mascot';
 

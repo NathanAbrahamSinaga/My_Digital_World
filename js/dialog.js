@@ -6,7 +6,8 @@ const audioSystem = {
     pixelWipeSound: null,
     
     init() {
-        this.introMusic = new Audio('../assets/music/tokyo.mp3');
+        // UPDATE: Path menjadi absolute (pakai / di depan)
+        this.introMusic = new Audio('/assets/music/tokyo.mp3');
         this.introMusic.loop = true;
         
         this.clickSound = {
@@ -151,14 +152,12 @@ function skipIntro() {
                     }
                 },
                 () => {
-                    // UPDATE: URL bersih ke /main
                     window.location.href = '/main';
                 }
             );
         } else {
             audioSystem.playPixelWipe();
             setTimeout(() => {
-                // UPDATE: URL bersih ke /main
                 window.location.href = '/main';
             }, 300);
         }
@@ -203,7 +202,6 @@ function startIntro() {
 }
 
 window.addEventListener('load', () => {
-    // Show pixel art elements immediately
     const pixelArt = document.querySelector('.pixel-art-elements');
     if (pixelArt) {
         pixelArt.style.display = 'block';
