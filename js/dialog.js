@@ -141,10 +141,16 @@ function skipIntro() {
         if (typeof triggerBlurTransition === 'function') {
             triggerBlurTransition(
                 () => {
-                    // On covered - fade out intro elements
+                    // On covered - fade out intro elements but keep pixel art
                     const introVideo = document.getElementById('intro-video-bg');
                     if (introVideo) introVideo.style.display = 'none';
                     document.body.classList.remove('intro-page');
+                    
+                    // Make sure pixel art stays visible
+                    const pixelArt = document.querySelector('.pixel-art-elements');
+                    if (pixelArt) {
+                        pixelArt.style.display = 'block';
+                    }
                 },
                 () => {
                     // On complete - navigate to main
@@ -199,6 +205,12 @@ function startIntro() {
 }
 
 window.addEventListener('load', () => {
+    // Show pixel art elements immediately
+    const pixelArt = document.querySelector('.pixel-art-elements');
+    if (pixelArt) {
+        pixelArt.style.display = 'block';
+    }
+    
     audioSystem.playIntroMusic();
     startIntro();
 });

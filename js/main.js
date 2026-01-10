@@ -158,6 +158,12 @@ let currentThemeIndex = 0;
 
 // Initialize on load
 window.addEventListener('load', () => {
+    // Show pixel art elements
+    const pixelArt = document.querySelector('.pixel-art-elements');
+    if (pixelArt) {
+        pixelArt.style.display = 'block';
+    }
+    
     // Show main menu immediately
     showMainMenu();
     
@@ -251,5 +257,3 @@ function goToZootopia() {
     
     window.location.href = 'zootopia.html';
 }
-
-// Load remaining functions from separate modules
