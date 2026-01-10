@@ -15,8 +15,6 @@
     <link rel="stylesheet" href="../css/zootopia.css">
 </head>
 <body>
-    <div id="page-transition-overlay" class="page-transition-overlay active"></div>
-
     <div class="bg-container">
         <div class="city-bg"></div>
         <div class="clouds"></div>
@@ -33,6 +31,11 @@
     <div id="rain-container"></div>
 
     <div class="top-right-controls">
+        <button id="theme-toggle-btn" class="control-btn" aria-label="Toggle Theme">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37l-1.34-1.34c-.39-.39-1.02-.39-1.41 0L9 11.25 12.75 15l8.96-8.96c.39-.39.39-1.02 0-1.41z"/>
+            </svg>
+        </button>
         <button id="music-toggle-btn" class="control-btn" aria-label="Toggle Music">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
@@ -80,43 +83,7 @@
                         <p>Amazing creativity showcase</p>
                     </div>
                 </div>
-                 <div class="fanart-card" style="animation-delay: 0.2s">
-                    <div class="fanart-placeholder">
-                        <span>Fan Art Zootopia</span>
-                    </div>
-                    <div class="fanart-info">
-                        <h3>Art Title 3</h3>
-                        <p>Stunning character design</p>
-                    </div>
                 </div>
-                 <div class="fanart-card" style="animation-delay: 0.3s">
-                    <div class="fanart-placeholder">
-                        <span>Fan Art Zootopia</span>
-                    </div>
-                    <div class="fanart-info">
-                        <h3>Art Title 4</h3>
-                        <p>Creative interpretation</p>
-                    </div>
-                </div>
-                 <div class="fanart-card" style="animation-delay: 0.4s">
-                    <div class="fanart-placeholder">
-                        <span>Fan Art Zootopia</span>
-                    </div>
-                    <div class="fanart-info">
-                        <h3>Art Title 5</h3>
-                        <p>Another amazing artwork</p>
-                    </div>
-                </div>
-                 <div class="fanart-card" style="animation-delay: 0.5s">
-                    <div class="fanart-placeholder">
-                        <span>Fan Art Zootopia</span>
-                    </div>
-                    <div class="fanart-info">
-                        <h3>Art Title 6</h3>
-                        <p>More creative content</p>
-                    </div>
-                </div>
-            </div>
         </section>
 
         <section class="zootopia-section">
@@ -132,47 +99,7 @@
                         <button class="nes-btn is-primary music-play-btn">▶ Play</button>
                     </div>
                 </div>
-                <div class="music-card" style="animation-delay: 0.15s">
-                    <div class="music-placeholder">
-                        <span>Music</span>
-                    </div>
-                    <div class="music-details">
-                        <h3>Original Score</h3>
-                        <p>Michael Giacchino - OST</p>
-                        <button class="nes-btn is-primary music-play-btn">▶ Play</button>
-                    </div>
                 </div>
-                <div class="music-card" style="animation-delay: 0.3s">
-                    <div class="music-placeholder">
-                        <span>Music</span>
-                    </div>
-                    <div class="music-details">
-                        <h3>Fan Cover</h3>
-                        <p>Community Creation</p>
-                        <button class="nes-btn is-primary music-play-btn">▶ Play</button>
-                    </div>
-                </div>
-                <div class="music-card" style="animation-delay: 0.45s">
-                    <div class="music-placeholder">
-                        <span>Music</span>
-                    </div>
-                    <div class="music-details">
-                        <h3>Theme Song</h3>
-                        <p>Instrumental Version</p>
-                        <button class="nes-btn is-primary music-play-btn">▶ Play</button>
-                    </div>
-                </div>
-                <div class="music-card" style="animation-delay: 0.6s">
-                    <div class="music-placeholder">
-                        <span>Music</span>
-                    </div>
-                    <div class="music-details">
-                        <h3>Bonus Track</h3>
-                        <p>Extended Edition</p>
-                        <button class="nes-btn is-primary music-play-btn">▶ Play</button>
-                    </div>
-                </div>
-            </div>
         </section>
 
         <section class="zootopia-section fanfic-section">
@@ -188,80 +115,12 @@
                             <span>Fan fict story alternative universe</span>
                         </div>
                         <p class="fanfic-excerpt">
-                            An alternative universe where Nick and Judy face new challenges 
-                            in a world transformed by mysterious events...
+                            An alternative universe where Nick and Judy face new challenges...
                         </p>
                     </div>
                     <button class="nes-btn fanfic-read-btn">Read More →</button>
                 </div>
-                <div class="fanfic-card" style="animation-delay: 0.15s">
-                    <div class="fanfic-header">
-                        <h3>Story Title Two</h3>
-                        <span class="fanfic-tag">AU - Adventure</span>
-                    </div>
-                    <div class="fanfic-preview">
-                        <div class="fanfic-placeholder">
-                            <span>Fan fict story alternative universe</span>
-                        </div>
-                        <p class="fanfic-excerpt">
-                            A thrilling adventure in an alternate timeline where Zootopia 
-                            has evolved into a futuristic metropolis...
-                        </p>
-                    </div>
-                    <button class="nes-btn fanfic-read-btn">Read More →</button>
                 </div>
-                
-                <div class="fanfic-card" style="animation-delay: 0.3s">
-                    <div class="fanfic-header">
-                        <h3>Story Title Three</h3>
-                        <span class="fanfic-tag">AU - Mystery</span>
-                    </div>
-                    <div class="fanfic-preview">
-                        <div class="fanfic-placeholder">
-                            <span>Fan fict story alternative universe</span>
-                        </div>
-                        <p class="fanfic-excerpt">
-                            Dark secrets lurk beneath the city as our heroes investigate 
-                            a conspiracy that threatens everything they know...
-                        </p>
-                    </div>
-                    <button class="nes-btn fanfic-read-btn">Read More →</button>
-                </div>
-
-                <div class="fanfic-card" style="animation-delay: 0.45s">
-                    <div class="fanfic-header">
-                        <h3>Story Title Four</h3>
-                        <span class="fanfic-tag">AU - Drama</span>
-                    </div>
-                    <div class="fanfic-preview">
-                        <div class="fanfic-placeholder">
-                            <span>Fan fict story alternative universe</span>
-                        </div>
-                        <p class="fanfic-excerpt">
-                            A powerful drama exploring the emotional depths of friendship 
-                            and trust in a divided city...
-                        </p>
-                    </div>
-                    <button class="nes-btn fanfic-read-btn">Read More →</button>
-                </div>
-
-                <div class="fanfic-card" style="animation-delay: 0.6s">
-                    <div class="fanfic-header">
-                        <h3>Story Title Five</h3>
-                        <span class="fanfic-tag">AU - Sci-Fi</span>
-                    </div>
-                    <div class="fanfic-preview">
-                        <div class="fanfic-placeholder">
-                            <span>Fan fict story alternative universe</span>
-                        </div>
-                        <p class="fanfic-excerpt">
-                            Journey to the stars as Zootopia becomes an interstellar 
-                            civilization facing cosmic challenges...
-                        </p>
-                    </div>
-                    <button class="nes-btn fanfic-read-btn">Read More →</button>
-                </div>
-            </div>
         </section>
     </div>
 
