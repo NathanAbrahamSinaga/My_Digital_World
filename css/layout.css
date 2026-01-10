@@ -1,3 +1,5 @@
+/* css/layout.css */
+
 .blur-transition-overlay {
     position: fixed;
     top: 0;
@@ -115,15 +117,67 @@
 }
 .back-btn:hover { background: #FFB6C1; transform: translateY(-2px); }
 
+/* --- UPDATED CONTROLS STYLING --- */
 .top-right-controls {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 25px;
+    right: 25px;
     z-index: 200;
     display: flex;
-    gap: 10px;
+    gap: 15px;
 }
-#music-toggle-btn, #theme-toggle-btn {
-    font-size: 14px;
-    padding: 5px 10px;
+
+.control-btn {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #212529;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: var(--nes-cursor-pointer), pointer;
+    transition: all 0.1s;
+    background-color: #fff;
+    box-shadow: 
+        inset -4px -4px 0px rgba(0,0,0,0.15),
+        2px 4px 0px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.control-btn:active {
+    transform: translateY(2px);
+    box-shadow: 
+        inset -2px -2px 0px rgba(0,0,0,0.15),
+        0px 0px 0px rgba(0,0,0,0.2);
+}
+
+.control-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: #212529;
+    transition: transform 0.3s ease;
+}
+
+.control-btn:hover svg {
+    transform: scale(1.15) rotate(5deg);
+}
+
+/* Theme Button Specifics */
+#theme-toggle-btn {
+    background-color: #f7d51d; /* Kuning NES */
+}
+#theme-toggle-btn:hover {
+    background-color: #ffe082;
+}
+
+/* Music Button Specifics */
+#music-toggle-btn {
+    background-color: #209cee; /* Biru NES */
+}
+#music-toggle-btn.muted {
+    background-color: #e76e55; /* Merah untuk mute */
+}
+#music-toggle-btn:hover {
+    filter: brightness(1.1);
 }

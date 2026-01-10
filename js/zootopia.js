@@ -1,4 +1,4 @@
-// Zootopia Page JavaScript
+// zootopia.js - Zootopia Page JavaScript
 
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize ambient effects for Zootopia page
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Back button functionality
+    // Back button functionality (UPDATED)
     const backBtn = document.getElementById('zootopia-back-btn');
     if (backBtn) {
         backBtn.addEventListener('click', (e) => {
@@ -55,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 sessionStorage.setItem('musicCurrentTime', persistentAudioPlayer.audio.currentTime);
             }
             
-            // Navigate to index and show main menu
-            window.location.href = '../index.html#main-menu';
+            // Navigate directly to main.html
+            window.location.href = 'main.html';
         });
     }
 
@@ -96,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = btn.closest('.fanfic-card');
             const title = card.querySelector('h3').textContent;
             
-            // Could open a modal or navigate to detailed page
             console.log(`Opening story: ${title}`);
             
             // Visual feedback

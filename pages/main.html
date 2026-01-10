@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="../css/responsive.css">
 </head>
 <body>
-    <!-- Background -->
     <div class="bg-container">
         <div class="city-bg"></div>
         <div class="clouds"></div>
@@ -32,16 +31,21 @@
     
     <div id="blur-transition" class="blur-transition-overlay"></div>
 
-    <!-- Top Controls -->
     <div class="top-right-controls">
-        <button id="theme-toggle-btn" class="nes-btn">🎨</button>
-        <button id="music-toggle-btn" class="nes-btn is-warning">🎵</button>
+        <button id="theme-toggle-btn" class="control-btn" aria-label="Toggle Theme">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37l-1.34-1.34c-.39-.39-1.02-.39-1.41 0L9 11.25 12.75 15l8.96-8.96c.39-.39.39-1.02 0-1.41z"/>
+            </svg>
+        </button>
+        <button id="music-toggle-btn" class="control-btn" aria-label="Toggle Music">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
+        </button>
     </div>
 
-    <!-- Back Button -->
     <button id="main-back-btn" class="back-btn" onclick="showMainMenu()">← Back</button>
 
-    <!-- Main Navigation -->
     <div id="mainNav" class="main-nav">
         <button class="nav-btn" onclick="showPage('blog')">📚 Blog</button>
         <button class="nav-btn" onclick="showPage('music')">🎵 Music</button>
@@ -50,7 +54,6 @@
         <button class="nav-btn" onclick="goToZootopia()">🦊 Zootopia</button>
     </div>
 
-    <!-- Page Contents -->
     <div id="blogPage" class="page-content">
         <h1 class="page-header">📚 My Blog</h1>
         <div id="blogPosts" class="blog-posts"></div>
@@ -74,7 +77,6 @@
         <div id="aboutContent" class="about-content"></div>
     </div>
 
-    <!-- Image Modal -->
     <div id="image-modal" class="image-modal">
         <span id="close-modal-btn" class="close-modal-btn">×</span>
         <img class="modal-content" id="modal-image">
