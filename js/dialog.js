@@ -141,27 +141,25 @@ function skipIntro() {
         if (typeof triggerBlurTransition === 'function') {
             triggerBlurTransition(
                 () => {
-                    // On covered - fade out intro elements but keep pixel art
                     const introVideo = document.getElementById('intro-video-bg');
                     if (introVideo) introVideo.style.display = 'none';
                     document.body.classList.remove('intro-page');
                     
-                    // Make sure pixel art stays visible
                     const pixelArt = document.querySelector('.pixel-art-elements');
                     if (pixelArt) {
                         pixelArt.style.display = 'block';
                     }
                 },
                 () => {
-                    // On complete - navigate to main
-                    window.location.href = 'main.html';
+                    // UPDATE: URL bersih ke /main
+                    window.location.href = '/main';
                 }
             );
         } else {
-            // Fallback without blur effect
             audioSystem.playPixelWipe();
             setTimeout(() => {
-                window.location.href = 'main.html';
+                // UPDATE: URL bersih ke /main
+                window.location.href = '/main';
             }, 300);
         }
     }, 500);

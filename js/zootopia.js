@@ -55,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 sessionStorage.setItem('musicCurrentTime', persistentAudioPlayer.audio.currentTime);
             }
             
-            // Navigate directly to main.html
-            window.location.href = 'main.html';
+            // UPDATE: URL bersih ke /main
+            window.location.href = '/main';
         });
     }
 

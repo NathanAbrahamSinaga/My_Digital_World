@@ -268,5 +268,6 @@ function goToZootopia() {
         sessionStorage.setItem('musicCurrentTime', persistentAudioPlayer.audio.currentTime);
     }
     
-    window.location.href = 'zootopia.html';
+    // UPDATE: URL bersih ke /zootopia
+    window.location.href = '/zootopia';
 }

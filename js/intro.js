@@ -54,8 +54,6 @@ function startLoading() {
             progress = 100;
             clearInterval(interval);
             
-            // --- MULAI TRANSISI ---
-            
             // 1. Fade out musik kereta
             audioSystem.fadeOutMusic(1200);
 
@@ -71,10 +69,10 @@ function startLoading() {
                 }, 200);
             }
 
-            // 4. Pindah halaman (ke DIALOG agar percakapan tetap ada)
+            // 4. Pindah halaman ke URL bersih (/dialog)
             setTimeout(() => {
-                window.location.href = 'pages/dialog.html';
-            }, 1400); // Waktu total transisi selesai
+                window.location.href = '/dialog'; // UPDATE: URL bersih
+            }, 1400); 
         }
         loadingBarFill.style.width = progress + '%';
     }, 100);
