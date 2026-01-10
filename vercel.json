@@ -1,6 +1,7 @@
 {
   "cleanUrls": true,
   "rewrites": [
+    { "source": "/", "destination": "/index.html" },
     { "source": "/dialog", "destination": "/pages/dialog.html" },
     { "source": "/main", "destination": "/pages/main.html" },
     { "source": "/zootopia", "destination": "/pages/zootopia.html" }
