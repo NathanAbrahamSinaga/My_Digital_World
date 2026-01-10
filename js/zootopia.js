@@ -1,6 +1,11 @@
 // zootopia.js - Zootopia Page JavaScript
 
 document.addEventListener('DOMContentLoaded', () => {
+    // START TRANSITION: Fade In
+    if (typeof initializePageTransition === 'function') {
+        initializePageTransition();
+    }
+
     // Initialize ambient effects for Zootopia page
     if (typeof initializeAmbientEffects === 'function' && !document.body.dataset.effectsInitialized) {
         initializeAmbientEffects();
@@ -40,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Back button functionality (UPDATED)
+    // Back button functionality (UPDATED for Smooth Transition)
     const backBtn = document.getElementById('zootopia-back-btn');
     if (backBtn) {
         backBtn.addEventListener('click', (e) => {
@@ -55,8 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 sessionStorage.setItem('musicCurrentTime', persistentAudioPlayer.audio.currentTime);
             }
             
-            // UPDATE: URL bersih ke /main
-            window.location.href = '/main';
+            // UPDATE: Gunakan fungsi transisi smooth
+            if (typeof handlePageNavigation === 'function') {
+                handlePageNavigation('/main');
+            } else {
+                window.location.href = '/main';
+            }
         });
     }
 

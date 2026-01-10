@@ -6,7 +6,6 @@ const audioSystem = {
     pixelWipeSound: null,
     
     init() {
-        // UPDATE: Path menjadi absolute (pakai / di depan)
         this.introMusic = new Audio('/assets/music/tokyo.mp3');
         this.introMusic.loop = true;
         
@@ -133,33 +132,21 @@ function skipIntro() {
     const mouth = document.querySelector('.mouth');
     if (mouth) mouth.classList.remove('talking');
 
+    // UI Feedback: Fade out dialog box first
     introContainer.style.opacity = '0';
     
     setTimeout(() => {
         audioSystem.stopIntroMusic();
         
-        // Use blur transition effect
-        if (typeof triggerBlurTransition === 'function') {
-            triggerBlurTransition(
-                () => {
-                    const introVideo = document.getElementById('intro-video-bg');
-                    if (introVideo) introVideo.style.display = 'none';
-                    document.body.classList.remove('intro-page');
-                    
-                    const pixelArt = document.querySelector('.pixel-art-elements');
-                    if (pixelArt) {
-                        pixelArt.style.display = 'block';
-                    }
-                },
-                () => {
-                    window.location.href = '/main';
-                }
-            );
+        // UPDATE: Gunakan handlePageNavigation untuk transisi smooth ke main
+        if (typeof handlePageNavigation === 'function') {
+             const introVideo = document.getElementById('intro-video-bg');
+             if (introVideo) introVideo.style.display = 'none';
+             
+             // Panggil fungsi transisi dari theme-effects.js
+             handlePageNavigation('/main');
         } else {
-            audioSystem.playPixelWipe();
-            setTimeout(() => {
-                window.location.href = '/main';
-            }, 300);
+            window.location.href = '/main';
         }
     }, 500);
 }
@@ -202,6 +189,11 @@ function startIntro() {
 }
 
 window.addEventListener('load', () => {
+    // START TRANSITION: Fade In halaman dialog
+    if (typeof initializePageTransition === 'function') {
+        initializePageTransition();
+    }
+
     const pixelArt = document.querySelector('.pixel-art-elements');
     if (pixelArt) {
         pixelArt.style.display = 'block';

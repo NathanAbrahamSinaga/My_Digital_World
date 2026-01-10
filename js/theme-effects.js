@@ -1,4 +1,42 @@
-// theme-effects.js - Theme changes and ambient effects
+// theme-effects.js - Theme changes, ambient effects, and Page Transitions
+
+// --- NEW: Page Transition Logic ---
+
+// 1. Fungsi dipanggil saat halaman baru selesai dimuat (Fade In)
+function initializePageTransition() {
+    const transitionOverlay = document.getElementById('page-transition-overlay');
+    if (transitionOverlay) {
+        // Beri sedikit delay agar browser merender overlay hitam dulu
+        setTimeout(() => {
+            transitionOverlay.classList.remove('active');
+        }, 100);
+    }
+}
+
+// 2. Fungsi dipanggil saat user klik link pindah halaman (Fade Out -> Pindah)
+function handlePageNavigation(targetUrl) {
+    const transitionOverlay = document.getElementById('page-transition-overlay');
+    
+    // Mainkan sound effect jika ada
+    if (typeof audioSystem !== 'undefined') {
+        audioSystem.playPixelWipe();
+    }
+
+    if (transitionOverlay) {
+        // Aktifkan overlay hitam (Fade Out content)
+        transitionOverlay.classList.add('active');
+        
+        // Tunggu animasi CSS selesai (800ms sesuai CSS layout.css)
+        setTimeout(() => {
+            window.location.href = targetUrl;
+        }, 800);
+    } else {
+        // Fallback jika overlay tidak ada
+        window.location.href = targetUrl;
+    }
+}
+
+// --- Existing Theme Logic ---
 
 function triggerBlurTransition(onCovered, onComplete) {
     const transitionEl = document.getElementById('blur-transition');

@@ -1,5 +1,26 @@
 /* css/layout.css */
 
+/* --- Page Transition Overlay (NEW) --- */
+.page-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000; /* Warna transisi (hitam) */
+    z-index: 9999; /* Pastikan paling depan */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease-in-out;
+}
+
+/* Kelas ini ditempel saat halaman baru load ATAU mau pindah */
+.page-transition-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* --- Blur Transition (Existing - Keep it for Theme Switch) --- */
 .blur-transition-overlay {
     position: fixed;
     top: 0;
@@ -56,7 +77,7 @@
     }
 }
 
-
+/* Main App Container */
 #main-app {
     display: none;
     opacity: 0;

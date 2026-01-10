@@ -170,6 +170,11 @@ let currentThemeIndex = 0;
 
 // Initialize on load
 window.addEventListener('load', () => {
+    // START TRANSITION: Fade In
+    if (typeof initializePageTransition === 'function') {
+        initializePageTransition();
+    }
+
     // Show pixel art elements
     const pixelArt = document.querySelector('.pixel-art-elements');
     if (pixelArt) {
@@ -267,5 +272,10 @@ function goToZootopia() {
         sessionStorage.setItem('musicCurrentTime', persistentAudioPlayer.audio.currentTime);
     }
     
-    window.location.href = '/zootopia';
+    // UPDATE: Gunakan handlePageNavigation untuk transisi smooth
+    if (typeof handlePageNavigation === 'function') {
+        handlePageNavigation('/zootopia');
+    } else {
+        window.location.href = '/zootopia';
+    }
 }
