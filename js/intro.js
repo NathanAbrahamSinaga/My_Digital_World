@@ -1,4 +1,4 @@
-// js/intro.js - Handles intro sequence and loading
+// intro.js - Handles intro sequence and loading
 
 const audioSystem = {
     loadingMusic: null,
@@ -6,7 +6,7 @@ const audioSystem = {
     init() {
         this.loadingMusic = new Audio('assets/music/train.wav');
         this.loadingMusic.loop = false;
-        this.loadingMusic.volume = 1.0; // Set volume awal
+        this.loadingMusic.volume = 1.0; // Volume awal
     },
     
     playLoadingMusic() {
@@ -15,19 +15,24 @@ const audioSystem = {
         }
     },
 
-    // Fungsi baru untuk mengecilkan volume perlahan
+    // Fungsi baru untuk mengecilkan volume secara halus (Fade Out)
     fadeOutMusic(duration = 1000) {
         if (!this.loadingMusic) return;
         
-        const fadeAudio = setInterval(() => {
-            if (this.loadingMusic.volume > 0.05) {
-                this.loadingMusic.volume -= 0.05;
+        const originalVolume = this.loadingMusic.volume;
+        const steps = 20; // Jumlah langkah penurunan volume
+        const stepTime = duration / steps;
+        const volStep = originalVolume / steps;
+
+        const fadeInterval = setInterval(() => {
+            if (this.loadingMusic.volume > volStep) {
+                this.loadingMusic.volume -= volStep;
             } else {
                 this.loadingMusic.volume = 0;
                 this.loadingMusic.pause();
-                clearInterval(fadeAudio);
+                clearInterval(fadeInterval);
             }
-        }, duration / 20); // Interval pembagian waktu
+        }, stepTime);
     }
 };
 
@@ -35,41 +40,44 @@ audioSystem.init();
 
 function startLoading() {
     const loadingBarFill = document.getElementById('loadingBarFill');
-    const transitionOverlay = document.getElementById('transition-overlay');
-    
+    const loadingScreen = document.getElementById('loadingScreen');
+    const overlay = document.getElementById('transition-overlay');
+
     if (!loadingBarFill) return;
     
     audioSystem.playLoadingMusic();
 
     let progress = 0;
-    // Percepat loading sedikit agar tidak terlalu lama menunggu
     const interval = setInterval(() => {
-        progress += 2; // Kecepatan loading
-        
-        // Update width
-        loadingBarFill.style.width = progress + '%';
-
-        // Jika selesai loading
+        progress += 2;
         if (progress >= 100) {
             progress = 100;
             clearInterval(interval);
             
-            // 1. Mulai transisi visual (layar jadi gelap)
-            if (transitionOverlay) {
-                transitionOverlay.classList.add('active');
+            // --- MULAI TRANSISI ---
+            
+            // 1. Fade out musik kereta
+            audioSystem.fadeOutMusic(1200);
+
+            // 2. Efek blur/zoom pada konten loading
+            if (loadingScreen) {
+                loadingScreen.classList.add('exiting');
             }
 
-            // 2. Fade out audio agar halus
-            audioSystem.fadeOutMusic(1000);
+            // 3. Layar menggelap (Fade to Black)
+            if (overlay) {
+                setTimeout(() => {
+                    overlay.classList.add('active');
+                }, 200);
+            }
 
-            // 3. Tunggu transisi selesai (1 detik) baru pindah halaman
+            // 4. Pindah halaman (ke DIALOG agar percakapan tetap ada)
             setTimeout(() => {
-                // Arahkan ke dialog.html (atau main.html jika Anda ingin langsung)
-                // Pastikan path-nya benar
-                window.location.href = 'pages/dialog.html'; 
-            }, 1000);
+                window.location.href = 'pages/dialog.html';
+            }, 1400); // Waktu total transisi selesai
         }
-    }, 60); // Interval update bar (semakin kecil semakin cepat)
+        loadingBarFill.style.width = progress + '%';
+    }, 100);
 }
 
 window.addEventListener('load', () => {
@@ -79,26 +87,20 @@ window.addEventListener('load', () => {
 
     if (startButton && startScreen && loadingScreen) {
         startButton.addEventListener('click', () => {
-            // Efek klik sederhana sebelum loading
-            startButton.style.transform = "scale(0.95)";
+            // Efek fade out start screen
+            startScreen.style.opacity = '0';
+            
             setTimeout(() => {
-                startScreen.style.opacity = '0'; // Fade out start screen
-                startScreen.style.transition = 'opacity 0.5s';
+                startScreen.style.display = 'none';
                 
-                setTimeout(() => {
-                    startScreen.style.display = 'none';
-                    loadingScreen.style.display = 'flex';
-                    loadingScreen.style.opacity = '0';
-                    
-                    // Fade in loading screen
-                    requestAnimationFrame(() => {
-                        loadingScreen.style.transition = 'opacity 0.5s';
-                        loadingScreen.style.opacity = '1';
-                    });
-                    
-                    startLoading();
-                }, 500);
-            }, 100);
+                // Fade in loading screen
+                loadingScreen.style.display = 'flex';
+                // Trigger reflow
+                void loadingScreen.offsetWidth;
+                loadingScreen.style.opacity = '1';
+                
+                startLoading();
+            }, 800);
         }, { once: true });
     }
 });
