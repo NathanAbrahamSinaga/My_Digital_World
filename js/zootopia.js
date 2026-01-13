@@ -238,58 +238,74 @@ function initializeDragScroll() {
 
 // Auto Scroll for Fan Art (Ping-Pong Effect)
 function startAutoScroll(container, initialDirection = 1) {
-    let scrollSpeed = 0.5; // Slower for smoother visual
-    let direction = initialDirection; // Use provided initial direction
+    let scrollSpeed = 0.5;
+    let direction = initialDirection;
     let animationId;
     let isHovering = false;
     let isPaused = false;
-    let isReady = false;
     
-    // If starting with left direction, position at the right end first
+    console.log(`🎬 Starting auto-scroll for ${container.id} with direction: ${initialDirection === 1 ? 'RIGHT →' : 'LEFT ←'}`);
+    
+    // For left-scrolling containers, we need to start from the right
     if (initialDirection === -1) {
-        // Use interval to check when content is loaded
-        let checkInterval = setInterval(() => {
+        // Wait for content to load, then position at right
+        const positionAtRight = () => {
             if (container.scrollWidth > container.clientWidth) {
-                container.scrollLeft = container.scrollWidth - container.clientWidth;
-                isReady = true;
-                clearInterval(checkInterval);
-                console.log(`✅ ${container.id} positioned at right, ready to scroll left`);
+                const maxScroll = container.scrollWidth - container.clientWidth;
+                container.scrollLeft = maxScroll;
+                console.log(`✅ ${container.id} positioned at RIGHT (scrollLeft: ${container.scrollLeft}/${maxScroll})`);
+                return true;
             }
-        }, 100); // Check every 100ms
+            return false;
+        };
         
-        // Timeout after 5 seconds
-        setTimeout(() => {
-            clearInterval(checkInterval);
-            if (!isReady) {
-                isReady = true; // Start anyway
-                console.log(`⚠️ ${container.id} timeout, starting anyway`);
-            }
-        }, 5000);
-    } else {
-        isReady = true;
-        console.log(`✅ ${container.id} ready to scroll right`);
+        // Try immediately
+        if (!positionAtRight()) {
+            // If not ready, keep trying
+            let attempts = 0;
+            const checkInterval = setInterval(() => {
+                attempts++;
+                if (positionAtRight() || attempts > 50) {
+                    clearInterval(checkInterval);
+                    if (attempts > 50) {
+                        console.warn(`⚠️ ${container.id} failed to position after 50 attempts`);
+                    }
+                }
+            }, 100);
+        }
     }
 
-
     function scroll() {
-        if (!isHovering && !container.classList.contains('expanded') && !isPaused && isReady) {
+        // Only scroll if not hovering, not expanded, and not paused
+        if (!isHovering && !container.classList.contains('expanded') && !isPaused) {
+            // Check if container has scrollable content
             if (container.scrollWidth > container.clientWidth) {
+                const maxScroll = container.scrollWidth - container.clientWidth;
+                
                 // Update scroll position
                 container.scrollLeft += (scrollSpeed * direction);
                 
-                // Check right boundary (using a small buffer 1px to be safe)
-                if (direction === 1 && container.scrollLeft >= (container.scrollWidth - container.clientWidth - 1)) {
-                    direction = -1; // Reverse to Left
-                }
-                // Check left boundary
-                else if (direction === -1 && container.scrollLeft <= 0) {
-                    direction = 1; // Reverse to Right
+                // Boundary checks with ping-pong reversal
+                if (direction === 1) {
+                    // Scrolling RIGHT - check if hit right boundary
+                    if (container.scrollLeft >= maxScroll - 1) {
+                        direction = -1; // Reverse to LEFT
+                        console.log(`🔄 ${container.id} hit RIGHT boundary, reversing to LEFT`);
+                    }
+                } else {
+                    // Scrolling LEFT - check if hit left boundary
+                    if (container.scrollLeft <= 1) {
+                        direction = 1; // Reverse to RIGHT
+                        console.log(`🔄 ${container.id} hit LEFT boundary, reversing to RIGHT`);
+                    }
                 }
             }
         }
+        
         animationId = requestAnimationFrame(scroll);
     }
 
+    // Event listeners
     container.addEventListener('mouseenter', () => {
         isHovering = true;
     });
@@ -305,10 +321,10 @@ function startAutoScroll(container, initialDirection = 1) {
     container.addEventListener('mouseup', () => {
         setTimeout(() => {
             isPaused = false;
-        }, 1000); // Longer pause after interaction (1s)
+        }, 1000);
     });
 
-    // Handle Touch for Mobile
+    // Touch events for mobile
     container.addEventListener('touchstart', () => {
         isPaused = true;
     });
@@ -319,6 +335,7 @@ function startAutoScroll(container, initialDirection = 1) {
         }, 1000);
     });
 
+    // Start the animation loop
     scroll();
 }
 
