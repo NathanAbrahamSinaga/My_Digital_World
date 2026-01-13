@@ -79,6 +79,12 @@
     width: 100%;
   }
 
+  /* Force 2 columns for expanded fanart on mobile */
+  .fanart-grid.expanded {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
   .music-card {
     min-width: 260px;
     max-width: 260px;
