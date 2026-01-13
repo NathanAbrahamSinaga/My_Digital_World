@@ -338,7 +338,7 @@ function loadFanArt() {
             container.innerHTML = data.map(art => `
                 <div class="fanart-card">
                     <div class="fanart-placeholder" onclick="openImageModal('../assets/zootopia/art/${art.image}')">
-                        <img src="../assets/zootopia/art/${art.image}" alt="${art.artist}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <img src="../assets/zootopia/art/${art.image}" alt="${art.artist}" draggable="false" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         <span style="display:none;">Art Preview</span>
                     </div>
                     <div class="fanart-info">
@@ -369,7 +369,7 @@ function loadMusic() {
             container.innerHTML = data.map((music, index) => `
                 <div class="music-card" onclick="window.open('${music.url}', '_blank')">
                     <div class="music-placeholder">
-                        <img src="../assets/zootopia/music/${music.image}" alt="${music.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <img src="../assets/zootopia/music/${music.image}" alt="${music.title}" draggable="false" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         <span style="display:none;">${music.title}</span>
                     </div>
                     <div class="music-details">
@@ -464,7 +464,7 @@ function loadStories() {
             container.innerHTML = data.map(story => `
                 <div class="fanfic-card">
                     <div class="fanfic-placeholder">
-                        <img src="../assets/zootopia/stories/${story.image}" alt="${story.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <img src="../assets/zootopia/stories/${story.image}" alt="${story.title}" draggable="false" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         <span style="display:none;">Story Cover</span>
                     </div>
                     <div class="fanfic-header">
