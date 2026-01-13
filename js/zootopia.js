@@ -11,8 +11,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const loaderBar = document.querySelector('.loader-bar');
     
     // Function to update progress bar
+    let musicTriggered = false;
     const updateProgress = (ratio) => {
         if (loaderBar) loaderBar.style.width = `${Math.round(ratio * 100)}%`;
+        
+        // Trigger music at 70%
+        if (ratio >= 0.7 && !musicTriggered) {
+            musicTriggered = true;
+            initializeZootopiaMusic();
+        }
     };
 
     // 1. Initiate Data Loading (Return Promises)
@@ -124,8 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initialize Zootopia music player
-    initializeZootopiaMusic();
+    // Initialize Zootopia music player (Handled by updateProgress at 70%)
+    // initializeZootopiaMusic();
 
     // Initialize expand/collapse for Fan Art
     initializeFanArtExpand();
@@ -647,6 +654,8 @@ const zootopiaAudioPlayer = {
         this.audio = new Audio('../assets/zootopia/music/1.mp3');
         this.audio.loop = true;
         this.audio.volume = 0.5; // Set volume to 50%
+        this.audio.preload = 'auto';
+        this.audio.autoplay = true;
         
         this.audio.play().catch(error => {
             console.error("Failed to play Zootopia music:", error);
@@ -675,24 +684,19 @@ const zootopiaAudioPlayer = {
     },
 
     showAudioPrompt() {
-        if (document.querySelector('.audio-prompt')) return;
-        
-        const prompt = document.createElement('div');
-        prompt.className = 'audio-prompt';
-        prompt.textContent = 'Click anywhere to enable sound.';
-        prompt.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#333; color:#fff; padding:10px; border-radius:5px; z-index:9999;';
-        document.body.appendChild(prompt);
-        
+        // Silent unlock - no visual prompt
         const enableAudio = () => {
-            if (this.audio) {
-                this.audio.play().then(() => prompt.remove()).catch(e => console.error(e));
+            if (this.audio && this.audio.paused) {
+                this.audio.play().catch(e => console.error("Silent autoplay retry failed:", e));
             }
             window.removeEventListener('click', enableAudio);
             window.removeEventListener('touchstart', enableAudio);
+            window.removeEventListener('keydown', enableAudio);
         };
         
         window.addEventListener('click', enableAudio, { once: true });
         window.addEventListener('touchstart', enableAudio, { once: true });
+        window.addEventListener('keydown', enableAudio, { once: true });
     }
 };
 
