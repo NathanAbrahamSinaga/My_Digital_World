@@ -1,18 +1,27 @@
 [
   {
-    "title": "Comic 1",
-    "image": "comic1.jpg"
+    "title": "Comic Title 1",
+    "artist": "Artist Name 1",
+    "image": "comic1.jpg",
+    "url": "https://example.com/comic1"
   },
   {
-    "title": "Comic 2",
-    "image": "comic2.jpg"
+    "title": "Comic Title 2",
+    "artist": "Artist Name 2",
+    "image": "comic2.jpg",
+    "url": "https://example.com/comic2"
   },
   {
-    "title": "Comic 3",
-    "image": "comic3.jpg"
+    "title": "Comic Title 3",
+    "artist": "Artist Name 3",
+    "image": "comic3.jpg",
+    "url": "https://example.com/comic3"
   },
   {
-    "title": "Comic 4",
-    "image": "comic4.jpg"
+    "title": "Comic Title 4",
+    "artist": "Artist Name 4",
+    "image": "comic4.jpg",
+    "url": "https://example.com/comic4"
   }
 ]
+

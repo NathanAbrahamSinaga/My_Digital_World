@@ -445,13 +445,14 @@ function loadComic() {
             if (!container) return;
             
             container.innerHTML = data.map(comic => `
-                <div class="fanart-card">
-                    <div class="fanart-placeholder" onclick="openImageModal('../assets/zootopia/comic/${comic.image}')">
+                <div class="fanart-card" onclick="window.open('${comic.url}', '_blank')" style="cursor: pointer;">
+                    <div class="fanart-placeholder">
                         <img src="../assets/zootopia/comic/${comic.image}" alt="${comic.title}" draggable="false" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <span style="display:none;">Comic Preview</span>
+                        <span style="display:none;">Comic Cover</span>
                     </div>
                     <div class="fanart-info">
-                        <p>${comic.title}</p>
+                        <p><strong>${comic.title}</strong></p>
+                        <p style="font-size: 0.85em; opacity: 0.8;">by ${comic.artist}</p>
                     </div>
                 </div>
             `).join('');
