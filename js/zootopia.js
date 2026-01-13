@@ -221,14 +221,14 @@ function initializeDragScroll() {
         // Apply auto-scroll to fanart-grid containers with different directions
         if (container.classList.contains('fanart-grid')) {
             // Determine direction based on container ID
-            let initialDirection = 1; // Default: Right
+            let initialDirection = 1; // Default: Right (1 = right, -1 = left)
             
             if (container.id === 'fanart-grid') {
-                initialDirection = 1; // Fanart: Right
+                initialDirection = 1; // Fanart: Start scrolling Right
             } else if (container.id === 'comic-grid') {
-                initialDirection = -1; // Comic: Left
+                initialDirection = -1; // Comic: Start scrolling Left
             } else if (container.id === 'misc-grid') {
-                initialDirection = 1; // Miscellaneous: Right
+                initialDirection = 1; // Miscellaneous: Start scrolling Right
             }
             
             startAutoScroll(container, initialDirection);
