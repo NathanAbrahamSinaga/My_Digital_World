@@ -114,14 +114,14 @@
 
 .story-modal-description {
   color: #e0e0e0;
-  font-size: 1.05em;
-  line-height: 1.8;
+  font-size: 0.95em;
+  line-height: 1.7;
   margin-bottom: 32px;
   text-align: justify;
 }
 
 .story-modal-description p {
-  margin: 0 0 16px 0;
+  margin: 0 0 14px 0;
 }
 
 .story-modal-description p:last-child {
@@ -157,11 +157,12 @@
   }
   
   .story-modal-author {
-    font-size: 1em;
+    font-size: 0.95em;
   }
   
   .story-modal-description {
-    font-size: 0.95em;
+    font-size: 0.85em;
+    line-height: 1.6;
   }
   
   .story-modal-cover {
