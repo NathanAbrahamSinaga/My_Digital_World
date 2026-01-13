@@ -1,0 +1,34 @@
+[
+  {
+    "artist": "Artist Name 1",
+    "image": "art1.webp"
+  },
+  {
+    "artist": "Artist Name 2",
+    "image": "art2.jpg"
+  },
+  {
+    "artist": "Artist Name 3",
+    "image": "art3.jpg"
+  },
+  {
+    "artist": "Artist Name 4",
+    "image": "art4.jpg"
+  },
+  {
+    "artist": "Artist Name 5",
+    "image": "art5.jpg"
+  },
+  {
+    "artist": "Artist Name 6",
+    "image": "art6.jpg"
+  },
+  {
+    "artist": "Artist Name 7",
+    "image": "art7.jpg"
+  },
+  {
+    "artist": "Artist Name 8",
+    "image": "art8.jpg"
+  }
+]

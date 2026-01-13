@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Story Title 1",
+    "description": "Story excerpt text goes here. This is a preview of the story content that will be displayed on hover.",
+    "author": "Author Name 1",
+    "image": "story1.jpg"
+  },
+  {
+    "title": "Story Title 2",
+    "description": "Another exciting story preview that describes the plot and characters in an engaging way.",
+    "author": "Author Name 2",
+    "image": "story2.jpg"
+  },
+  {
+    "title": "Story Title 3",
+    "description": "A thrilling tale that will captivate readers with its unique storyline and memorable moments.",
+    "author": "Author Name 3",
+    "image": "story3.jpg"
+  }
+]

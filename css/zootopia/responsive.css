@@ -1,0 +1,169 @@
+/* css/zootopia/responsive.css - Mobile responsive styles */
+
+@media (max-width: 768px) {
+  .zootopia-hero {
+    height: 50vh;
+    min-height: 350px;
+    margin-bottom: 110px;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    overflow: visible;
+  }
+  
+  .banner-placeholder {
+    clip-path: inset(0 0 0 0);
+    overflow: hidden;
+  }
+  
+  .zootopia-hero svg {
+    bottom: -1px;
+  }
+
+  .logo-placeholder {
+    width: 320px;
+    height: 145px;
+    bottom: -70px;
+    padding: 12px;
+    overflow: visible;
+    -webkit-mask-image: radial-gradient(ellipse 85% 80% at 50% 50%, black 40%, transparent 100%);
+    mask-image: radial-gradient(ellipse 85% 80% at 50% 50%, black 40%, transparent 100%);
+  }
+
+  .logo-placeholder img {
+    padding: 12px;
+  }
+  
+  /* Hide heavy decorations on mobile */
+  .hero-deco {
+    display: none;
+  }
+
+  .zootopia-section,
+  .video-highlight-section {
+    padding: 0 20px;
+    margin-bottom: 60px;
+  }
+
+  .section-header,
+  .video-highlight-header {
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+
+  .video-highlight-title {
+    font-size: 16px;
+  }
+
+  .expand-toggle {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+
+  .fanart-grid {
+    padding: 4px 0 20px 0;
+  }
+
+  .fanart-card {
+    min-width: 240px;
+    max-width: 240px;
+  }
+
+  .fanart-grid.expanded .fanart-card {
+    min-width: auto;
+    max-width: none;
+    width: 100%;
+  }
+
+  .music-card {
+    min-width: 260px;
+    max-width: 260px;
+  }
+
+  .fanfic-card {
+    min-width: 280px;
+    max-width: 280px;
+  }
+
+  .video-highlight-container {
+    max-width: 100%;
+  }
+
+  #zootopia-back-btn,
+  .control-btn {
+    top: 16px;
+  }
+
+  #zootopia-back-btn {
+    left: 16px;
+    font-size: 8px;
+    padding: 8px 12px;
+  }
+
+  .control-btn {
+    right: 16px;
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Video Background Strip - Mobile */
+  .video-background-strip {
+    height: 200px;
+    margin: 50px 0 50px 0;
+  }
+
+  .video-background-strip::before,
+  .video-background-strip::after {
+    /* UPDATED: Menyesuaikan agar blur di mobile juga tidak terlalu tebal */
+    height: 30px;
+  }
+
+  /* Corner Video Widget - Mobile */
+  .corner-video-widget {
+    width: 160px; /* Increased from 120px */
+    bottom: 25px;
+    right: 20px;
+    border-width: 1px;
+  }
+  /* Mobile Decorations as Background */
+  .section-bg-deco {
+    display: block;
+    position: absolute;
+    width: 250px;
+    height: auto;
+    z-index: -1; 
+    opacity: 0.5; /* Increased opacity from 0.15 */
+    pointer-events: none;
+  }
+
+  /* 1.png (Judy) - Behind Fan Film Synopsis */
+  .video-synopsis {
+    position: relative; /* Context for absolute positioning */
+  }
+
+  .deco-fanfilm {
+    top: -50px;
+    right: -20px;
+    transform: rotate(10deg);
+    animation: floatRight 5s ease-in-out infinite; /* Floating animation */
+  }
+
+  /* 2.png (Nick) - Behind Music Section */
+  .music-section-bg {
+    position: relative;
+    overflow: hidden; /* Contain the image */
+  }
+
+  .deco-music {
+    bottom: -20px;
+    left: -40px;
+    width: 280px;
+    transform: rotate(-5deg);
+    opacity: 0.5; /* Increased opacity */
+    animation: floatLeft 4s ease-in-out infinite; /* Floating animation */
+  }
+}

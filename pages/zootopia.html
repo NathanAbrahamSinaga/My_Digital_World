@@ -1,43 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Coming Soon</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            background-image: url('https://images.squarespace-cdn.com/content/v1/54fc8146e4b02a22841f4df7/1711412636789-6QVNIFTH4RU7VF06WGVK/4.jpg?format=2500w');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        /* Overlay gelap biar teks kebaca */
-        .overlay {
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 40px 60px;
-            border-radius: 8px;
-        }
-
-        h1 {
-            color: #fff;
-            font-size: 4rem;
-            letter-spacing: 3px;
-            margin: 0;
-            text-align: center;
-        }
-    </style>
+    <title>Zootopia - XTempest</title>
+    <link rel="icon" type="image/x-icon" href="../assets/images/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/layout.css">
+    
+    <link rel="stylesheet" href="../css/zootopia/core.css">
+    <link rel="stylesheet" href="../css/zootopia/hero.css">
+    <link rel="stylesheet" href="../css/zootopia/sections.css">
+    <link rel="stylesheet" href="../css/zootopia/cards.css">
+    <link rel="stylesheet" href="../css/zootopia/modal.css">
+    <link rel="stylesheet" href="../css/zootopia/responsive.css">
 </head>
 <body>
-    <div class="overlay">
-        <h1>Coming Soon</h1>
+    <div id="page-transition-overlay" class="page-transition-overlay active"></div>
+    <!-- Custom Loading Video/Screen -->
+    <div id="zootopia-loader" class="zootopia-loader">
+        <div class="loader-content">
+            <img src="../assets/zootopia/logo.png" alt="Zootopia Logo" class="loader-logo">
+            <div class="loader-bar-container">
+                <div class="loader-bar"></div>
+            </div>
+            <p class="loader-text">Traveling to Zootopia...</p>
+        </div>
     </div>
+
+    <div class="top-right-controls">
+        <button id="music-toggle-btn" class="control-btn" aria-label="Toggle Music">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
+        </button>
+    </div>
+
+    <button id="zootopia-back-btn" class="back-btn">← Back</button>
+
+    <div class="zootopia-container">
+        <section class="zootopia-hero">
+            <div class="banner-placeholder">
+                <img id="hero-banner-image-1" class="banner-active" src="../assets/zootopia/banner.webp" alt="Banner">
+                <img id="hero-banner-image-2" class="banner-next" src="../assets/zootopia/banner2.jpg" alt="Banner">
+                <span>Banner Area</span>
+            </div>
+            
+            <svg viewBox="0 0 1023 83" enable-background="new 0 0 1023 83" xml:space="preserve">
+                <path fill="#36393E" d="M1024,27.68c0,0-109.167-28.004-221.241-28.004S511.5,27.563,511.5,27.563
+                    S364.931,51.268,251.447,51.268S-1,27.5-1,27.5V83h1024.5L1024,27.68z"></path>
+            </svg>
+            
+            <div class="logo-placeholder">
+                <img src="../assets/zootopia/logo.png" alt="Logo">
+            </div>
+
+            <!-- Decoration Images -->
+            <img class="hero-deco deco-left" src="../assets/zootopia/1.png" alt="Deco Left">
+            <img class="hero-deco deco-right" src="../assets/zootopia/2.png" alt="Deco Right">
+        </section>
+
+
+        <section class="video-highlight-section">
+            
+
+
+            <div class="video-content-wrapper">
+                <div class="video-highlight-header">
+                    <h2 class="video-highlight-title">Fan Film</h2>
+                </div>
+                <div class="video-highlight-container" onclick="window.open('https://www.youtube.com/watch?v=aVBQD2etF5k', '_blank')">
+                    <div class="video-cover-wrapper">
+                        <img src="../assets/zootopia/fanfilm.jpg" alt="Fan Film Cover" onerror="this.src='https://placehold.co/800x450/1a1c1f/90da6e?text=Fan+Film+Cover'">
+                        <div class="play-overlay">
+                            <span class="play-icon">▶</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-synopsis">
+                    <p>In Zootopia, Judy Hopps (Creative Multitasker) and Nick Wilde (Mauricio Velazco) have spent six months as partners in the ZPD, catching criminals and being the best at what they do... but their relationship is slowly flourishing into something more than friendship. Now the duo must test their trust for one another as a new case starts to slowly spiral their lives out of control.</p>
+                    <!-- Mobile Deco 1 (Behind Fan Film) -->
+                    <img src="../assets/zootopia/1.png" class="section-bg-deco deco-fanfilm" alt="">
+                </div>
+            </div>
+        </section>
+
+        <section class="zootopia-section">
+            <div class="section-header">
+                <h2 class="section-title">Fan Art</h2>
+                <button class="expand-toggle" id="fanart-expand" aria-label="Expand Fan Art">
+                    ▼
+                </button>
+            </div>
+            <div class="fanart-grid" id="fanart-grid">
+                </div>
+        </section>
+
+
+
+
+
+        <section class="video-interlude-section">
+             <video autoplay muted loop playsinline>
+                <source src="../assets/zootopia/videos/1.mp4" type="video/mp4">
+            </video>
+        </section>
+
+        <section class="zootopia-section fanfic-section">
+            <div class="section-header">
+                <h2 class="section-title">Alternative Universe</h2>
+            </div>
+            <div class="fanfic-grid" id="stories-grid">
+                </div>
+        </section>
+
+        <section class="zootopia-section music-section-bg">
+            <!-- Mobile Deco 2 (Behind Music) -->
+            <img src="../assets/zootopia/2.png" class="section-bg-deco deco-music" alt="">
+            
+            <div class="section-header">
+                <h2 class="section-title">Music</h2>
+            </div>
+            <div class="music-showcase" id="music-showcase">
+                </div>
+        </section>
+    </div>
+
+    <div id="image-modal" class="image-modal">
+        <span id="close-modal" class="close-modal">×</span>
+        <img class="modal-content" id="modal-image" alt="Full Screen Art">
+    </div>
+
+    <!-- Corner Video Widget -->
+    <div id="corner-video-widget" class="corner-video-widget">
+        <video id="corner-video" muted playsinline>
+            <source src="../assets/zootopia/videos/2.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <script src="../js/theme-effects.js"></script>
+    <script src="../js/zootopia.js"></script>
 </body>
 </html>

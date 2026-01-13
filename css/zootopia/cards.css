@@ -1,0 +1,336 @@
+/* css/zootopia/cards.css - All card styles (fanart, music, fanfic) */
+
+/* Fan Art Card */
+.fanart-card {
+  min-width: 280px;
+  max-width: 280px;
+  background: var(--background-grey);
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.fanart-grid.expanded .fanart-card {
+  min-width: auto;
+  max-width: none;
+  width: 100%;
+}
+
+.fanart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(144, 218, 110, 0.3);
+}
+
+.fanart-placeholder {
+  width: 100%;
+  height: 280px;
+  background: #1a1c1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #95a5a6;
+  position: relative;
+  overflow: hidden;
+}
+
+.fanart-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Fan Art Info - Overlay Style */
+.fanart-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 70%, transparent 100%);
+  color: var(--zootopia-gradient-light);
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+  pointer-events: none; /* Let clicks pass through if needed */
+}
+
+.fanart-card:hover .fanart-info {
+  opacity: 1;
+}
+
+.fanart-info p {
+  font-size: 10px;
+  color: var(--zootopia-gradient-light);
+  line-height: 1.5;
+  font-family: 'Press Start 2P', cursive;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+/* Music Card - Improved Layout */
+.music-card {
+  min-width: 280px; /* Matched to Fan Art Card (was 220px) */
+  max-width: 280px;
+  background: #202225;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.music-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(75, 183, 122, 0.4);
+}
+
+/* Square Container for Album Art */
+.music-placeholder {
+  width: 100%;
+  height: 280px; /* Fixed height to match fanart */
+  background: #2f3136;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #72767d;
+  position: relative;
+  overflow: hidden;
+}
+
+.music-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.music-card:hover .music-placeholder img {
+  transform: scale(1.1);
+}
+
+/* Music Details - Overlay Style */
+.music-details {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 70%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  text-align: left;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.music-card:hover .music-details {
+  opacity: 1;
+}
+
+.music-details h3 {
+  font-size: 11px;
+  color: #fff;
+  margin: 0;
+  font-family: 'Press Start 2P', cursive;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.music-details p {
+  font-size: 9px;
+  color: #ddd;
+  margin: 0;
+  font-family: 'Press Start 2P', cursive;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+/* Play Button Styling */
+.music-play-btn {
+  width: 100%;
+  padding: 8px 0;
+  margin-top: 4px;
+  font-size: 10px;
+  background: transparent;
+  color: var(--zootopia-gradient-light);
+  border: 1px solid var(--zootopia-gradient-light);
+  border-radius: 4px;
+  font-family: 'Press Start 2P', cursive;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.music-play-btn:hover {
+  background: var(--zootopia-gradient-light);
+  color: #1a1c1f;
+  border-color: var(--zootopia-gradient-light);
+}
+
+.music-play-btn.playing {
+  background: #e74c3c;
+  border-color: #e74c3c;
+  color: white;
+}
+
+/* Player Container overlay/expansion style */
+.music-player-container {
+  padding: 10px;
+  background: #1a1c1f;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Fan Fiction Card */
+.fanfic-card {
+  min-width: 350px;
+  max-width: 350px;
+  background: var(--background-grey);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.fanfic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(114, 175, 128, 0.3);
+}
+
+.fanfic-placeholder {
+  width: 100%;
+  height: 350px;
+  background: #1a1c1f;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #95a5a6;
+  text-align: center;
+  padding: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.fanfic-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.fanfic-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.7) 70%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.fanfic-card:hover .fanfic-header {
+  opacity: 1;
+}
+
+.fanfic-header h3 {
+  font-size: 12px;
+  color: var(--zootopia-gradient-light);
+  line-height: 1.4;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.fanfic-author {
+  font-size: 8px;
+  color: rgba(255,255,255,0.7);
+  font-family: 'Press Start 2P', cursive;
+}
+
+.fanfic-tag {
+  font-size: 7px;
+  padding: 4px 8px;
+  background: var(--role-color-zootopian);
+  color: white;
+  border: 1px solid var(--zootopia-gradient-light);
+  border-radius: 2px;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+
+.fanfic-preview {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.7) 70%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.fanfic-card:hover .fanfic-preview {
+  opacity: 1;
+}
+
+.fanfic-excerpt {
+  font-size: 9px;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.6;
+  font-family: 'Press Start 2P', cursive;
+  margin-bottom: 12px;
+}
+
+.fanfic-read-btn {
+  font-size: 8px;
+  padding: 8px 16px;
+  background: var(--role-color-zootopian);
+  color: white;
+  border: 1px solid var(--zootopia-gradient-light);
+  border-radius: 3px;
+  font-family: 'Press Start 2P', cursive;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fanfic-read-btn:hover {
+  background: var(--zootopia-gradient-light);
+  border-color: var(--zootopia-gradient-dark);
+  transform: scale(1.05);
+}

@@ -1,0 +1,266 @@
+/* css/zootopia/core.css - Core styles, variables, and base */
+
+/* Custom Zootopia Font */
+@font-face {
+  font-family: 'Zootopia';
+  src: url('../../assets/fonts/zootopia.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* CSS Variables */
+:root {
+  --zootopia-gradient-light: #90DA6E;
+  --zootopia-gradient-dark: #4BB77A;
+  --role-color-zootopian: #72af80;
+  --background-dark: #36393E;
+  --background-grey: #2C2F33;
+}
+
+/* Scroll Reveal Animation - Proven Pattern */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered animation for children */
+.scroll-reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.scroll-reveal-stagger.revealed > *:nth-child(1) { transition-delay: 0.1s; }
+.scroll-reveal-stagger.revealed > *:nth-child(2) { transition-delay: 0.2s; }
+.scroll-reveal-stagger.revealed > *:nth-child(3) { transition-delay: 0.3s; }
+.scroll-reveal-stagger.revealed > *:nth-child(4) { transition-delay: 0.4s; }
+.scroll-reveal-stagger.revealed > *:nth-child(5) { transition-delay: 0.5s; }
+.scroll-reveal-stagger.revealed > *:nth-child(6) { transition-delay: 0.6s; }
+
+.scroll-reveal-stagger.revealed > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Press Start 2P', cursive, sans-serif;
+  background: var(--background-dark);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+.zootopia-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* Back Button */
+#zootopia-back-btn {
+  display: block;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px 16px;
+  background: var(--role-color-zootopian);
+  color: white;
+  border: 2px solid var(--zootopia-gradient-light);
+  border-radius: 3px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  cursor: pointer;
+  z-index: 200;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+#zootopia-back-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(144, 218, 110, 0.4);
+  background: var(--zootopia-gradient-light);
+  border-color: var(--zootopia-gradient-dark);
+}
+
+/* Music Toggle Button */
+.top-right-controls {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 200;
+}
+
+.control-btn {
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--zootopia-gradient-light);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background: var(--role-color-zootopian);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.control-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(144, 218, 110, 0.4);
+  background: var(--zootopia-gradient-light);
+}
+
+.control-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: white;
+}
+
+.control-btn.muted {
+  background: #e74c3c;
+  border-color: #c0392b;
+}
+
+.control-btn.muted svg {
+  fill: white;
+}
+
+/* Corner Video Widget */
+.corner-video-widget {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 250px;
+  z-index: 150;
+  pointer-events: none;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+  opacity: 1;
+  border: 2px solid rgba(144, 218, 110, 0.3);
+  
+  /* Start hidden below the screen */
+  transform: translateY(150%);
+  transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy enter */
+  background: #000; /* Ensure black background for fade out */
+}
+
+/* Class to trigger slide up */
+.corner-video-widget.visible {
+  transform: translateY(0);
+}
+
+/* Class to trigger slide down (exit) */
+.corner-video-widget.hidden {
+  transform: translateY(150%);
+  transition: transform 0.8s ease-in; /* Smooth exit */
+}
+
+.corner-video-widget video {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: opacity 0.8s ease; /* Smooth fade to black */
+}
+
+.corner-video-widget.fading-out video {
+  opacity: 0; /* Fade video to black */
+}
+
+.corner-video-widget.fading-out video {
+  opacity: 0; /* Fade video to black */
+}
+
+.corner-video-widget:hover {
+  opacity: 1;
+  transform: scale(1.05);
+  border-color: var(--zootopia-gradient-light);
+}
+
+/* --- Zootopia Loader --- */
+.zootopia-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #1a1c1f; /* Deep dark background */
+  z-index: 9999; /* Highest priority */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease-out, visibility 0.8s;
+  visibility: visible;
+  opacity: 1;
+}
+
+.zootopia-loader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.loader-logo {
+  width: 200px;
+  height: auto;
+  animation: pulseLogo 2s infinite ease-in-out;
+}
+
+@keyframes pulseLogo {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+.loader-bar-container {
+  width: 250px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.loader-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(to right, var(--zootopia-gradient-dark), var(--zootopia-gradient-light));
+  border-radius: 3px;
+  transition: width 0.3s ease-out; /* JavaScript will animate this */
+}
+
+.loader-text {
+  color: var(--zootopia-gradient-light);
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  animation: blinkText 1.5s infinite;
+}
+
+@keyframes blinkText {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
