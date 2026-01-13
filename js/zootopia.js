@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Initiate Data Loading (Return Promises)
     const fanArtPromise = loadFanArt();
+    const comicPromise = loadComic();
+    const miscPromise = loadMiscellaneous();
     const musicPromise = loadMusic();
     const storiesPromise = loadStories();
 
@@ -59,6 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Combine ALL promises to track
     const allPromises = [
         fanArtPromise,
+        comicPromise,
+        miscPromise,
         musicPromise,
         storiesPromise,
         ...imagePromises,
@@ -134,8 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Zootopia music player (Handled by updateProgress at 70%)
     // initializeZootopiaMusic();
 
-    // Initialize expand/collapse for Fan Art
+    // Initialize expand/collapse for Fan Art, Comic, and Miscellaneous
     initializeFanArtExpand();
+    initializeComicExpand();
+    initializeMiscExpand();
     
     // Initialize image modal
     initializeImageModal();
@@ -307,6 +313,66 @@ function initializeFanArtExpand() {
     });
 }
 
+// Initialize Comic Expand/Collapse
+function initializeComicExpand() {
+    const expandBtn = document.getElementById('comic-expand');
+    const comicGrid = document.getElementById('comic-grid');
+    
+    if (!expandBtn || !comicGrid) return;
+    
+    expandBtn.addEventListener('click', () => {
+        if (typeof audioSystem !== 'undefined') {
+            audioSystem.playClick();
+        }
+        
+        const isExpanding = !comicGrid.classList.contains('expanded');
+        
+        comicGrid.classList.toggle('expanded');
+        expandBtn.classList.toggle('expanded');
+        
+        if (isExpanding) {
+            comicGrid.style.cursor = 'default';
+        } else {
+            comicGrid.style.cursor = 'grab';
+            comicGrid.scrollLeft = 0;
+            
+            setTimeout(() => {
+                expandBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    });
+}
+
+// Initialize Miscellaneous Expand/Collapse
+function initializeMiscExpand() {
+    const expandBtn = document.getElementById('misc-expand');
+    const miscGrid = document.getElementById('misc-grid');
+    
+    if (!expandBtn || !miscGrid) return;
+    
+    expandBtn.addEventListener('click', () => {
+        if (typeof audioSystem !== 'undefined') {
+            audioSystem.playClick();
+        }
+        
+        const isExpanding = !miscGrid.classList.contains('expanded');
+        
+        miscGrid.classList.toggle('expanded');
+        expandBtn.classList.toggle('expanded');
+        
+        if (isExpanding) {
+            miscGrid.style.cursor = 'default';
+        } else {
+            miscGrid.style.cursor = 'grab';
+            miscGrid.scrollLeft = 0;
+            
+            setTimeout(() => {
+                expandBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    });
+}
+
 // Image Modal for Full Screen View
 function initializeImageModal() {
     const modal = document.getElementById('image-modal');
@@ -366,6 +432,56 @@ function loadFanArt() {
             `).join('');
         })
         .catch(err => console.error('Failed to load fan art:', err));
+}
+
+// ============================================
+// Load Comic with ABSOLUTE PATH
+// ============================================
+function loadComic() {
+    return fetch('../data/zootopia/comic.json')  // ✅ Relative path
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('comic-grid');
+            if (!container) return;
+            
+            container.innerHTML = data.map(comic => `
+                <div class="fanart-card">
+                    <div class="fanart-placeholder" onclick="openImageModal('../assets/zootopia/comic/${comic.image}')">
+                        <img src="../assets/zootopia/comic/${comic.image}" alt="${comic.title}" draggable="false" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <span style="display:none;">Comic Preview</span>
+                    </div>
+                    <div class="fanart-info">
+                        <p>${comic.title}</p>
+                    </div>
+                </div>
+            `).join('');
+        })
+        .catch(err => console.error('Failed to load comic:', err));
+}
+
+// ============================================
+// Load Miscellaneous with ABSOLUTE PATH
+// ============================================
+function loadMiscellaneous() {
+    return fetch('../data/zootopia/miscellaneous.json')  // ✅ Relative path
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('misc-grid');
+            if (!container) return;
+            
+            container.innerHTML = data.map(misc => `
+                <div class="fanart-card">
+                    <div class="fanart-placeholder" onclick="openImageModal('../assets/zootopia/miscellaneous/${misc.image}')">
+                        <img src="../assets/zootopia/miscellaneous/${misc.image}" alt="${misc.title}" draggable="false" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <span style="display:none;">Misc Preview</span>
+                    </div>
+                    <div class="fanart-info">
+                        <p>${misc.title}</p>
+                    </div>
+                </div>
+            `).join('');
+        })
+        .catch(err => console.error('Failed to load miscellaneous:', err));
 }
 
 // ============================================
