@@ -38,39 +38,46 @@
     display: none;
   }
 
+  /* Reduced section spacing for mobile comfort */
   .zootopia-section,
   .video-highlight-section {
-    padding: 0 20px;
-    margin-bottom: 60px;
+    padding: 0 12px;
+    margin-bottom: 35px;
   }
 
   .section-header,
   .video-highlight-header {
-    margin-bottom: 20px;
-    padding-bottom: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
   }
 
+  /* Smaller title sizes for mobile */
   .section-title {
-    font-size: 18px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
   }
 
   .video-highlight-title {
-    font-size: 16px;
+    font-size: 11px;
+    letter-spacing: 0.5px;
   }
 
+  /* Smaller expand toggle button */
   .expand-toggle {
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
   }
 
+  /* Reduced grid padding */
   .fanart-grid {
-    padding: 4px 0 20px 0;
+    padding: 4px 0 12px 0;
   }
 
+  /* Smaller fanart cards for mobile */
   .fanart-card {
-    min-width: 240px;
-    max-width: 240px;
+    min-width: 160px;
+    max-width: 160px;
   }
 
   .fanart-grid.expanded .fanart-card {
@@ -79,24 +86,80 @@
     width: 100%;
   }
 
-  /* Force 2 columns for expanded fanart on mobile */
+  /* Force 2 columns for expanded fanart on mobile with smaller gap */
   .fanart-grid.expanded {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 8px;
   }
 
+  /* Smaller music cards */
   .music-card {
-    min-width: 260px;
-    max-width: 260px;
+    min-width: 180px;
+    max-width: 180px;
   }
 
+  /* Smaller fanfic cards */
   .fanfic-card {
-    min-width: 280px;
-    max-width: 280px;
+    min-width: 200px;
+    max-width: 200px;
   }
 
   .video-highlight-container {
     max-width: 100%;
+  }
+
+  /* Reduce video synopsis text size */
+  .video-synopsis {
+    font-size: 9px;
+    line-height: 1.5;
+    padding: 12px 0;
+  }
+
+  /* Smaller card titles and text */
+  .fanart-card h3,
+  .music-card h3,
+  .fanfic-card h3 {
+    font-size: 9px;
+    margin-bottom: 4px;
+  }
+
+  .fanart-card p,
+  .music-card p,
+  .fanfic-card p {
+    font-size: 7px;
+    line-height: 1.4;
+  }
+
+  /* Smaller play button on video */
+  .play-icon {
+    font-size: 32px !important;
+  }
+
+  /* Reduce modal content size on mobile */
+  .story-modal-content {
+    padding: 16px;
+    max-width: 90%;
+  }
+
+  .story-modal-title {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .story-modal-author {
+    font-size: 8px;
+    margin-bottom: 12px;
+  }
+
+  .story-modal-description {
+    font-size: 9px;
+    line-height: 1.5;
+  }
+
+  .story-modal-read-btn {
+    font-size: 9px;
+    padding: 10px 16px;
+    margin-top: 12px;
   }
 
   /* Align back button and music toggle at same height on mobile */
