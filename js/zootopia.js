@@ -6,82 +6,98 @@ document.addEventListener('DOMContentLoaded', () => {
         initializePageTransition();
     }
 
-    // Load all data
-    loadFanArt();
-    loadMusic();
-    loadStories();
-
-    // Initialize drag scrolling for all grids
-    initializeDragScroll();
-
     // --- Zootopia Asset Preloader ---
     const loader = document.getElementById('zootopia-loader');
     const loaderBar = document.querySelector('.loader-bar');
-    
-    // Critical assets to preload
-    const assetsToLoad = [
-        '../assets/zootopia/logo.png',
-        '../assets/zootopia/banner.webp',
-         // Add others if needed
-    ];
-
-    let loadedCount = 0;
     
     // Function to update progress bar
     const updateProgress = (ratio) => {
         if (loaderBar) loaderBar.style.width = `${Math.round(ratio * 100)}%`;
     };
 
-    // Preload Images
-    const preloadImage = (src) => {
+    // 1. Initiate Data Loading (Return Promises)
+    const fanArtPromise = loadFanArt();
+    const musicPromise = loadMusic();
+    const storiesPromise = loadStories();
+
+    // 2. Critical Image Assets to Preload
+    const assetsToLoad = [
+        '../assets/zootopia/logo.png',
+        '../assets/zootopia/banner.webp',
+        '../assets/zootopia/1.png',
+        '../assets/zootopia/2.png'
+    ];
+
+    const imagePromises = assetsToLoad.map(src => {
         return new Promise((resolve) => {
             const img = new Image();
             img.src = src;
             img.onload = resolve;
             img.onerror = resolve; // Continue even if fail
         });
-    };
+    });
 
-    // Minimum load time effect (so it's not instant)
-    const minLoadTime = new Promise(resolve => setTimeout(resolve, 1500));
+    // 3. Minimum Visual Load Time (1.5s)
+    const minLoadPromise = new Promise(resolve => setTimeout(resolve, 1500));
 
-    // Wait for everything
-    Promise.all([
-        ...assetsToLoad.map(preloadImage), // Preload critical images
-        new Promise(resolve => window.addEventListener('load', resolve)), // Wait for whole page load
-        minLoadTime // Visual consistency
-    ]).then(() => {
-        // Complete!
+    // 4. Window Load Event (CSS/Scripts/Layout)
+    const windowLoadPromise = new Promise(resolve => {
+        if (document.readyState === 'complete') {
+            resolve();
+        } else {
+            window.addEventListener('load', resolve);
+        }
+    });
+
+    // Combine ALL promises to track
+    const allPromises = [
+        fanArtPromise,
+        musicPromise,
+        storiesPromise,
+        ...imagePromises,
+        minLoadPromise,
+        windowLoadPromise
+    ];
+
+    let completedCount = 0;
+    const totalPromises = allPromises.length;
+
+    // Track progress of each promise individually for smooth bar
+    allPromises.forEach(p => {
+        Promise.resolve(p).then(() => {
+            completedCount++;
+            updateProgress(completedCount / totalPromises);
+        }).catch(() => {
+            // Even if failed, count as done to prevent hanging
+            completedCount++;
+            updateProgress(completedCount / totalPromises);
+        });
+    });
+
+    // When EVERYTHING is ready
+    Promise.allSettled(allPromises).then(() => {
+        // Force 100%
         updateProgress(1);
+
         setTimeout(() => {
             if (loader) loader.classList.add('hidden');
             
-            // Only initialize other animations AFTER loading is clear
+            // Initialize post-load animations
             setTimeout(() => {
-                initializeCornerVideo(); // Start existing corner video logic
+                initializeCornerVideo();
                 initializeBannerRotation();
+                
+                // Initialize features that depend on DOM content (grids)
+                initializeDragScroll();
+                
+                // Initialize Scroll Transitions
+                initializeScrollReveal();
             }, 500);
 
-        }, 500); // Short delay at 100%
+        }, 500); // 0.5s delay at 100% before fading out
     });
 
-    // Fake progress animation for visual feedback while waiting
-    let fakeProgress = 0;
-    const progressInterval = setInterval(() => {
-        if (fakeProgress < 0.9) {
-            fakeProgress += 0.05;
-            updateProgress(fakeProgress);
-        } else {
-            clearInterval(progressInterval);
-        }
-    }, 100);
-
-    
-    // Initialize Scroll Transitions
-    initializeScrollReveal();
-
-    // Initialize image modal
-    initializeImageModal();
+    // --- Initialize Controls immediately (Event Listeners) ---
     
     // Back Button
     const backBtn = document.getElementById('zootopia-back-btn');
@@ -114,8 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize expand/collapse for Fan Art
     initializeFanArtExpand();
     
-    // Initialize Corner Video Widget
-    initializeCornerVideo();
+    // Initialize image modal
+    initializeImageModal();
 });
 
 // Corner Video Widget Logic
@@ -306,7 +322,7 @@ function openImageModal(imageSrc) {
 // FIXED: Load Fan Art with ABSOLUTE PATH
 // ============================================
 function loadFanArt() {
-    fetch('../data/zootopia/fanart.json')  // ✅ Relative path
+    return fetch('../data/zootopia/fanart.json')  // ✅ Relative path
         .then(res => res.json())
         .then(data => {
             const container = document.getElementById('fanart-grid');
@@ -337,7 +353,7 @@ function loadFanArt() {
 // FIXED: Load Music with ABSOLUTE PATH
 // ============================================
 function loadMusic() {
-    fetch('../data/zootopia/music.json')  // ✅ Relative path
+    return fetch('../data/zootopia/music.json')  // ✅ Relative path
         .then(res => res.json())
         .then(data => {
             const container = document.getElementById('music-showcase');
@@ -432,7 +448,7 @@ function toggleMusicPlayer(index, type, id) {
 // FIXED: Load Stories with ABSOLUTE PATH
 // ============================================
 function loadStories() {
-    fetch('../data/zootopia/stories.json')  // ✅ Relative path
+    return fetch('../data/zootopia/stories.json')  // ✅ Relative path
         .then(res => res.json())
         .then(data => {
             const container = document.getElementById('stories-grid');

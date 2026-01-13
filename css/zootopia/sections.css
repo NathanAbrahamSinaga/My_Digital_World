@@ -326,3 +326,7 @@
   font-family: 'Press Start 2P', cursive;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
+/* Specific positioning for 3.mp4 to show bottom content */
+.video-position-bottom {
+    object-position: bottom center !important;
+}
