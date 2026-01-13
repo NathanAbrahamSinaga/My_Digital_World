@@ -243,17 +243,36 @@ function startAutoScroll(container, initialDirection = 1) {
     let animationId;
     let isHovering = false;
     let isPaused = false;
+    let isReady = false;
     
     // If starting with left direction, position at the right end first
     if (initialDirection === -1) {
-        // Wait a bit for content to load, then scroll to end
+        // Use interval to check when content is loaded
+        let checkInterval = setInterval(() => {
+            if (container.scrollWidth > container.clientWidth) {
+                container.scrollLeft = container.scrollWidth - container.clientWidth;
+                isReady = true;
+                clearInterval(checkInterval);
+                console.log(`✅ ${container.id} positioned at right, ready to scroll left`);
+            }
+        }, 100); // Check every 100ms
+        
+        // Timeout after 5 seconds
         setTimeout(() => {
-            container.scrollLeft = container.scrollWidth - container.clientWidth;
-        }, 100);
+            clearInterval(checkInterval);
+            if (!isReady) {
+                isReady = true; // Start anyway
+                console.log(`⚠️ ${container.id} timeout, starting anyway`);
+            }
+        }, 5000);
+    } else {
+        isReady = true;
+        console.log(`✅ ${container.id} ready to scroll right`);
     }
 
+
     function scroll() {
-        if (!isHovering && !container.classList.contains('expanded') && !isPaused) {
+        if (!isHovering && !container.classList.contains('expanded') && !isPaused && isReady) {
             if (container.scrollWidth > container.clientWidth) {
                 // Update scroll position
                 container.scrollLeft += (scrollSpeed * direction);
