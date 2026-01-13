@@ -1,21 +1,21 @@
 [
   {
-    "title": "Comic Title 1",
-    "artist": "Artist Name 1",
-    "image": "comic1.jpg",
-    "url": "https://example.com/comic1"
+    "title": "Judy Has a Fever",
+    "artist": "@greenpurrpleD",
+    "image": "comic1.png",
+    "url": "https://x.com/greenpurrpleD/status/2008185766439223317"
   },
   {
-    "title": "Comic Title 2",
-    "artist": "Artist Name 2",
-    "image": "comic2.jpg",
-    "url": "https://example.com/comic2"
+    "title": "1nick x 2judy",
+    "artist": "@greenpurrpleD",
+    "image": "comic2.jfif",
+    "url": "https://x.com/greenpurrpleD/status/2002367518841974912?s=20"
   },
   {
-    "title": "Comic Title 3",
-    "artist": "Artist Name 3",
-    "image": "comic3.jpg",
-    "url": "https://example.com/comic3"
+    "title": "2nick x 1judy",
+    "artist": "@greenpurrpleD",
+    "image": "comic3.jfif",
+    "url": "https://x.com/greenpurrpleD/status/2002367523363434945?s=20"
   },
   {
     "title": "Comic Title 4",

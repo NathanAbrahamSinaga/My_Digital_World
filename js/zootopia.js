@@ -145,6 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize image modal
     initializeImageModal();
+    
+    // Initialize story modal
+    initializeStoryModal();
 });
 
 // Corner Video Widget Logic
@@ -508,7 +511,7 @@ function loadComic() {
                     </div>
                     <div class="fanart-info">
                         <p><strong>${comic.title}</strong></p>
-                        <p style="font-size: 0.85em; opacity: 0.8;">by ${comic.artist}</p>
+                        <p style="font-size: 0.60em; opacity: 0.8;">${comic.artist}</p>
                     </div>
                 </div>
             `).join('');
@@ -652,8 +655,8 @@ function loadStories() {
             const container = document.getElementById('stories-grid');
             if (!container) return;
             
-            container.innerHTML = data.map(story => `
-                <div class="fanfic-card">
+            container.innerHTML = data.map((story, index) => `
+                <div class="fanfic-card" onclick="openStoryModal(${index})" style="cursor: pointer;" data-story-index="${index}">
                     <div class="fanfic-placeholder">
                         <img src="../assets/zootopia/stories/${story.image}" alt="${story.title}" draggable="false" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         <span style="display:none;">Story Cover</span>
@@ -664,23 +667,89 @@ function loadStories() {
                         <span class="fanfic-tag">Fiction</span>
                     </div>
                     <div class="fanfic-preview">
-                        <p class="fanfic-excerpt">${story.description}</p>
-                        <button class="fanfic-read-btn" onclick="handleReadStory('${story.title}')">Read More →</button>
+                        <p class="fanfic-excerpt">${story.description.substring(0, 150)}...</p>
                     </div>
                 </div>
             `).join('');
+            
+            // Store stories data globally for modal access
+            window.storiesData = data;
         })
         .catch(err => console.error('Failed to load stories:', err));
 }
 
-// Handle Read Story
-function handleReadStory(title) {
+// Open Story Synopsis Modal
+function openStoryModal(index) {
     if (typeof audioSystem !== 'undefined') {
         audioSystem.playClick();
     }
     
-    console.log(`Opening story: ${title}`);
-    alert(`Story "${title}" will be opened here!`);
+    const story = window.storiesData[index];
+    if (!story) return;
+    
+    const modal = document.getElementById('story-modal');
+    const cover = document.getElementById('story-modal-cover');
+    const title = document.getElementById('story-modal-title');
+    const author = document.getElementById('story-modal-author');
+    const description = document.getElementById('story-modal-description');
+    const readBtn = document.getElementById('story-modal-read-btn');
+    
+    if (!modal) return;
+    
+    // Set modal content
+    cover.src = `../assets/zootopia/stories/${story.image}`;
+    cover.onerror = () => { cover.style.display = 'none'; };
+    title.textContent = story.title;
+    author.textContent = `by ${story.author}`;
+    
+    // Convert line breaks to paragraphs
+    const paragraphs = story.description.split('\n\n').filter(p => p.trim());
+    description.innerHTML = paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
+    
+    // Set Read More button click handler
+    readBtn.onclick = (e) => {
+        e.stopPropagation();
+        if (typeof audioSystem !== 'undefined') {
+            audioSystem.playClick();
+        }
+        window.open(story.url, '_blank');
+    };
+    
+    // Show modal
+    modal.classList.add('show');
+}
+
+// Close Story Modal
+function closeStoryModal() {
+    const modal = document.getElementById('story-modal');
+    if (modal) {
+        modal.classList.remove('show');
+    }
+}
+
+// Initialize Story Modal
+function initializeStoryModal() {
+    const modal = document.getElementById('story-modal');
+    const closeBtn = document.getElementById('close-story-modal');
+    
+    if (!modal || !closeBtn) return;
+    
+    // Close button
+    closeBtn.addEventListener('click', closeStoryModal);
+    
+    // Click outside modal to close
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeStoryModal();
+        }
+    });
+    
+    // ESC key to close
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('show')) {
+            closeStoryModal();
+        }
+    });
 }
 
 // ============================================
