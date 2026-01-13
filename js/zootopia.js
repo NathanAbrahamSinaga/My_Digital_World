@@ -218,19 +218,39 @@ function initializeDragScroll() {
             container.scrollLeft = scrollLeft - walk;
         });
 
+        // Apply auto-scroll to fanart-grid containers with different directions
         if (container.classList.contains('fanart-grid')) {
-            startAutoScroll(container);
+            // Determine direction based on container ID
+            let initialDirection = 1; // Default: Right
+            
+            if (container.id === 'fanart-grid') {
+                initialDirection = 1; // Fanart: Right
+            } else if (container.id === 'comic-grid') {
+                initialDirection = -1; // Comic: Left
+            } else if (container.id === 'misc-grid') {
+                initialDirection = 1; // Miscellaneous: Right
+            }
+            
+            startAutoScroll(container, initialDirection);
         }
     });
 }
 
 // Auto Scroll for Fan Art (Ping-Pong Effect)
-function startAutoScroll(container) {
+function startAutoScroll(container, initialDirection = 1) {
     let scrollSpeed = 0.5; // Slower for smoother visual
-    let direction = 1; // 1 = Right, -1 = Left
+    let direction = initialDirection; // Use provided initial direction
     let animationId;
     let isHovering = false;
     let isPaused = false;
+    
+    // If starting with left direction, position at the right end first
+    if (initialDirection === -1) {
+        // Wait a bit for content to load, then scroll to end
+        setTimeout(() => {
+            container.scrollLeft = container.scrollWidth - container.clientWidth;
+        }, 100);
+    }
 
     function scroll() {
         if (!isHovering && !container.classList.contains('expanded') && !isPaused) {

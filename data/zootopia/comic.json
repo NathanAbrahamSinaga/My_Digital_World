@@ -22,6 +22,31 @@
     "artist": "Artist Name 4",
     "image": "comic4.jpg",
     "url": "https://example.com/comic4"
+  },
+  {
+    "title": "Comic Title 5",
+    "artist": "Artist Name 5",
+    "image": "comic5.jpg",
+    "url": "https://example.com/comic5"
+  },
+  {
+    "title": "Comic Title 6",
+    "artist": "Artist Name 6",
+    "image": "comic6.jpg",
+    "url": "https://example.com/comic6"
+  },
+  {
+    "title": "Comic Title 7",
+    "artist": "Artist Name 7",
+    "image": "comic7.jpg",
+    "url": "https://example.com/comic7"
+  },
+  {
+    "title": "Comic Title 8",
+    "artist": "Artist Name 8",
+    "image": "comic8.jpg",
+    "url": "https://example.com/comic8"
   }
 ]
+
 
