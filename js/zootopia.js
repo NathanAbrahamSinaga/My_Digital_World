@@ -101,9 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Navigate with transition
             if (typeof handlePageNavigation === 'function') {
-                handlePageNavigation('main.html');
+                handlePageNavigation('/main');
             } else {
-                window.location.href = 'main.html';
+                window.location.href = '/main';
             }
         });
     }
