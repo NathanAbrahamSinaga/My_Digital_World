@@ -218,9 +218,10 @@ function initializeDragScroll() {
     });
 }
 
-// Auto Scroll for Fan Art
+// Auto Scroll for Fan Art (Ping-Pong Effect)
 function startAutoScroll(container) {
-    let scrollSpeed = 1;
+    let scrollSpeed = 0.5; // Slower for smoother visual
+    let direction = 1; // 1 = Right, -1 = Left
     let animationId;
     let isHovering = false;
     let isPaused = false;
@@ -228,10 +229,16 @@ function startAutoScroll(container) {
     function scroll() {
         if (!isHovering && !container.classList.contains('expanded') && !isPaused) {
             if (container.scrollWidth > container.clientWidth) {
-                container.scrollLeft += scrollSpeed;
+                // Update scroll position
+                container.scrollLeft += (scrollSpeed * direction);
                 
-                if (container.scrollLeft >= container.scrollWidth - container.clientWidth) {
-                    container.scrollLeft = 0;
+                // Check right boundary (using a small buffer 1px to be safe)
+                if (direction === 1 && container.scrollLeft >= (container.scrollWidth - container.clientWidth - 1)) {
+                    direction = -1; // Reverse to Left
+                }
+                // Check left boundary
+                else if (direction === -1 && container.scrollLeft <= 0) {
+                    direction = 1; // Reverse to Right
                 }
             }
         }
@@ -253,7 +260,18 @@ function startAutoScroll(container) {
     container.addEventListener('mouseup', () => {
         setTimeout(() => {
             isPaused = false;
-        }, 500);
+        }, 1000); // Longer pause after interaction (1s)
+    });
+
+    // Handle Touch for Mobile
+    container.addEventListener('touchstart', () => {
+        isPaused = true;
+    });
+    
+    container.addEventListener('touchend', () => {
+        setTimeout(() => {
+            isPaused = false;
+        }, 1000);
     });
 
     scroll();
