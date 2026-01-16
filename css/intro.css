@@ -30,12 +30,78 @@
     text-align: center;
     color: #fff;
     transition: opacity 0.8s ease-in-out;
+    overflow: hidden;
+}
+
+/* Efek bintang berkedip */
+.stars-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 2s ease-in-out infinite;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+}
+
+.star:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+.star:nth-child(2) { top: 20%; left: 80%; animation-delay: 0.3s; }
+.star:nth-child(3) { top: 35%; left: 25%; animation-delay: 0.6s; width: 2px; height: 2px; }
+.star:nth-child(4) { top: 45%; left: 90%; animation-delay: 0.9s; }
+.star:nth-child(5) { top: 60%; left: 5%; animation-delay: 1.2s; width: 4px; height: 4px; }
+.star:nth-child(6) { top: 75%; left: 70%; animation-delay: 1.5s; width: 2px; height: 2px; }
+.star:nth-child(7) { top: 85%; left: 40%; animation-delay: 1.8s; }
+.star:nth-child(8) { top: 15%; left: 55%; animation-delay: 2.1s; width: 2px; height: 2px; }
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
 }
 
 .start-content { animation: fade-in 1.5s ease-in-out; }
-.start-title { font-size: 24px; margin-bottom: 20px; color: #87CEEB; text-shadow: 3px 3px 0px #212529; }
-.start-subtitle { font-size: 14px; color: #e0e0e0; margin-bottom: 50px; text-shadow: 1px 1px 0px #212529; }
-#start-button { font-size: 14px; padding: 12px 24px; }
+.start-title { 
+    font-size: 24px; 
+    margin-bottom: 20px; 
+    color: #87CEEB; 
+    text-shadow: 3px 3px 0px #212529, 0 0 20px rgba(135, 206, 235, 0.5), 0 0 40px rgba(135, 206, 235, 0.3);
+    animation: title-glow 2s ease-in-out infinite alternate;
+}
+.start-subtitle { 
+    font-size: 14px; 
+    color: #e0e0e0; 
+    margin-bottom: 50px; 
+    text-shadow: 1px 1px 0px #212529;
+    animation: fade-in 2s ease-in-out;
+}
+#start-button { 
+    font-size: 14px; 
+    padding: 12px 24px; 
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    animation: button-pulse 2s ease-in-out infinite;
+}
+#start-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(135, 206, 235, 0.6), 0 0 40px rgba(135, 206, 235, 0.3);
+}
+
+@keyframes title-glow {
+    0% { text-shadow: 3px 3px 0px #212529, 0 0 20px rgba(135, 206, 235, 0.5), 0 0 40px rgba(135, 206, 235, 0.3); }
+    100% { text-shadow: 3px 3px 0px #212529, 0 0 30px rgba(135, 206, 235, 0.7), 0 0 60px rgba(135, 206, 235, 0.4); }
+}
+
+@keyframes button-pulse {
+    0%, 100% { box-shadow: 0 0 5px rgba(135, 206, 235, 0.3); }
+    50% { box-shadow: 0 0 15px rgba(135, 206, 235, 0.5); }
+}
 
 .loading-screen {
     position: fixed;
@@ -56,10 +122,49 @@
 /* ... (Loading styles lainnya biarkan sama) ... */
 .loading-content { width: 90%; max-width: 400px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: all 1s ease; }
 .loading-screen.exiting .loading-content { transform: scale(1.05); opacity: 0; filter: blur(8px); }
-.loading-image { width: 100%; max-width: 350px; height: auto; image-rendering: pixelated; margin-bottom: 30px; }
-.loading-bar-container { width: 100%; max-width: 350px; height: 30px; background-color: #212529; border: 4px solid #fff; padding: 2px; }
-.loading-bar-fill { width: 0%; height: 100%; background-color: #87CEEB; transition: width 0.1s linear; }
-.loading-text { margin-top: 15px; font-size: 12px; color: #e0e0e0; text-shadow: none; }
+.loading-image { 
+    width: 100%; 
+    max-width: 350px; 
+    height: auto; 
+    image-rendering: pixelated; 
+    margin-bottom: 30px;
+    filter: drop-shadow(0 0 10px rgba(135, 206, 235, 0.3));
+}
+.loading-bar-container { 
+    width: 100%; 
+    max-width: 350px; 
+    height: 30px; 
+    background-color: #212529; 
+    border: 4px solid #fff; 
+    padding: 2px;
+    box-shadow: 0 0 15px rgba(135, 206, 235, 0.2);
+}
+.loading-bar-fill { 
+    width: 0%; 
+    height: 100%; 
+    background: linear-gradient(90deg, #87CEEB, #5db8de, #87CEEB);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s linear infinite;
+    transition: width 0.15s ease-out;
+    box-shadow: 0 0 10px rgba(135, 206, 235, 0.5);
+}
+.loading-text { 
+    margin-top: 15px; 
+    font-size: 12px; 
+    color: #e0e0e0; 
+    text-shadow: none;
+    animation: loading-pulse 1s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+@keyframes loading-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
 .transition-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; pointer-events: none; opacity: 0; transition: opacity 1.2s ease-in-out; }
 .transition-overlay.active { opacity: 1; }
 
