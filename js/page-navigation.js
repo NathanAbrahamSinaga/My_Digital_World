@@ -245,11 +245,6 @@ function showMascot() {
     
     mascot.addEventListener('animationend', (e) => {
         if (e.animationName === 'slideAndFadeIn' && !mascot.classList.contains('is-exiting')) {
-            // Set opacity dan transform secara eksplisit sebelum floating
-            mascot.style.opacity = '1';
-            mascot.style.transform = 'translateY(0)';
-            // Hapus class enter agar tidak conflict dengan floating animation
-            mascot.classList.remove('enter-from-left', 'enter-from-right');
             mascot.classList.add('is-floating');
         }
     }, { once: true });

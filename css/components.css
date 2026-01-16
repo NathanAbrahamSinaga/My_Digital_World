@@ -60,7 +60,7 @@
 }
 .music-mascot.enter-from-left { left: 20px; animation: slideAndFadeIn 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
 .music-mascot.enter-from-right { right: 20px; animation: slideAndFadeIn 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-.music-mascot.is-floating { opacity: 1; animation: floatAround 12s ease-in-out infinite; }
+.music-mascot.is-floating { animation: floatAround 12s ease-in-out infinite; }
 .music-mascot.is-exiting { animation: shrinkAndFadeOut 0.7s ease-in forwards; }
 
 @keyframes slideAndFadeIn {
